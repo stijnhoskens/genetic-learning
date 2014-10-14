@@ -38,6 +38,7 @@ public class RCV1Parser {
 		Files.list(input).forEach(p -> {
 			try {
 				parser.parse(p.toFile(), handler);
+				writer.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

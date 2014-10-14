@@ -43,7 +43,7 @@ public class WordFrequencyPair implements CharSequence,
 
 	@Override
 	public int compareTo(WordFrequencyPair o) {
-		return pair.compareTo(o.pair);
+		return getWord().compareTo(o.getWord());
 	}
 
 }
