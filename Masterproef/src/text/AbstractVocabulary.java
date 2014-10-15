@@ -9,13 +9,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-class AbstractDictionary<T extends CharSequence> {
+class AbstractVocabulary<T extends CharSequence> {
 
 	protected final List<T> terms = new ArrayList<>();
 	private final Comparator<? super T> comp;
 	private final BinarySearcher searcher;
 
-	AbstractDictionary(Collection<T> terms, Comparator<? super T> c,
+	AbstractVocabulary(Collection<T> terms, Comparator<? super T> c,
 			boolean isSorted) {
 		this.terms.addAll(terms);
 		this.comp = c;
@@ -53,11 +53,11 @@ class AbstractDictionary<T extends CharSequence> {
 		}
 	}
 
-	public AbstractDictionary<T> merge(AbstractDictionary<T> other) {
+	public AbstractVocabulary<T> merge(AbstractVocabulary<T> other) {
 		List<T> terms = new ArrayList<>();
 		terms.addAll(this.terms);
 		terms.addAll(other.terms);
 		terms.sort(comp);
-		return new AbstractDictionary<>(terms, comp, true);
+		return new AbstractVocabulary<>(terms, comp, true);
 	}
 }

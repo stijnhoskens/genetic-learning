@@ -1,7 +1,6 @@
 package text;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -10,14 +9,16 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Dictionary extends AbstractDictionary<String> {
+import data.IO;
 
-	private Dictionary(Collection<String> words,
+public class Vocabulary extends AbstractVocabulary<String> {
+
+	private Vocabulary(Collection<String> words,
 			Comparator<? super String> comp, boolean isSorted) {
 		super(words, comp, isSorted);
 	}
 
-	public Dictionary(Collection<String> words) {
+	public Vocabulary(Collection<String> words) {
 		super(words, naturalOrder(), false);
 	}
 
@@ -26,19 +27,19 @@ public class Dictionary extends AbstractDictionary<String> {
 	 * every line is the category followed by each word in the form
 	 * "word:frequency".
 	 */
-	public static Dictionary build(Path path) throws IOException {
-		return new Dictionary(wordFreqPairsOf(path).map(
+	public static Vocabulary build(Path path) throws IOException {
+		return new Vocabulary(wordFreqPairsOf(path).map(
 				WordFrequencyPair::getWord).collect(Collectors.toSet()),
 				naturalOrder(), false);
 	}
 
-	public static Dictionary load(Path path) throws IOException {
-		return new Dictionary(Files.readAllLines(path), naturalOrder(), true);
+	public static Vocabulary load(Path path) throws IOException {
+		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
 	private static Stream<WordFrequencyPair> wordFreqPairsOf(Path path)
 			throws IOException {
-		return Files.lines(path).map(s -> s.substring(s.indexOf(' ') + 1))
+		return IO.lines(path).map(s -> s.substring(s.indexOf(' ') + 1))
 				.flatMap(l -> Arrays.stream(l.split(" ")))
 				.map(WordFrequencyPair::new);
 	}
@@ -48,7 +49,7 @@ public class Dictionary extends AbstractDictionary<String> {
 	}
 
 	public static class WithFrequency extends
-			AbstractDictionary<WordFrequencyPair> {
+			AbstractVocabulary<WordFrequencyPair> {
 
 		private WithFrequency(Collection<WordFrequencyPair> terms,
 				Comparator<? super WordFrequencyPair> comp, boolean isSorted) {
@@ -76,7 +77,7 @@ public class Dictionary extends AbstractDictionary<String> {
 		}
 
 		public static WithFrequency load(Path path) throws IOException {
-			return new WithFrequency(Files.readAllLines(path).stream()
+			return new WithFrequency(IO.allLines(path).stream()
 					.map(WordFrequencyPair::new).collect(Collectors.toSet()),
 					naturalOrder(), true);
 		}
