@@ -31,6 +31,8 @@ public class DataSplitter {
 				e.printStackTrace();
 			}
 		});
+		testWriter.close();
+		trainWriter.close();
 	}
 
 	public static void main(String[] args) throws IOException {

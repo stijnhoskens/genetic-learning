@@ -12,13 +12,11 @@ import java.util.List;
 class AbstractVocabulary<T extends CharSequence> {
 
 	protected final List<T> terms = new ArrayList<>();
-	private final Comparator<? super T> comp;
 	private final BinarySearcher searcher;
 
 	AbstractVocabulary(Collection<T> terms, Comparator<? super T> c,
 			boolean isSorted) {
 		this.terms.addAll(terms);
-		this.comp = c;
 		if (!isSorted)
 			this.terms.sort(c);
 		searcher = new BinarySearcher();
@@ -51,13 +49,5 @@ class AbstractVocabulary<T extends CharSequence> {
 		public int search(T t) {
 			return Arrays.binarySearch(array, t);
 		}
-	}
-
-	public AbstractVocabulary<T> merge(AbstractVocabulary<T> other) {
-		List<T> terms = new ArrayList<>();
-		terms.addAll(this.terms);
-		terms.addAll(other.terms);
-		terms.sort(comp);
-		return new AbstractVocabulary<>(terms, comp, true);
 	}
 }
