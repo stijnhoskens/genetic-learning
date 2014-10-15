@@ -84,7 +84,7 @@ public final class Stopwords {
 			"yourself", "yourselves", "z", "zero" };
 
 	public static boolean contains(String word) {
-		return Arrays.binarySearch(LIST, word) > 0;
+		return Arrays.binarySearch(LIST, word) >= 0;
 	}
 
 	public static List<String> asList() {

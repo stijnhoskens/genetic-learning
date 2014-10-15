@@ -4,21 +4,27 @@ public class WordFrequencyPair implements CharSequence,
 		Comparable<WordFrequencyPair> {
 
 	private final String pair;
+	private final String word;
+	private final int freq;
 
 	public WordFrequencyPair(String pair) {
 		this.pair = pair;
+		word = pair.split(":")[0];
+		freq = Integer.parseInt(pair.split(":")[1]);
 	}
 
 	public WordFrequencyPair(String word, int freq) {
-		this.pair = word + ":" + freq;
+		pair = word + ":" + freq;
+		this.word = word;
+		this.freq = freq;
 	}
 
 	public String getWord() {
-		return pair.split(":")[0];
+		return word;
 	}
 
 	public int getFrequency() {
-		return Integer.parseInt(pair.split(":")[1]);
+		return freq;
 	}
 
 	@Override
