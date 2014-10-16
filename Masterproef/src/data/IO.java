@@ -4,7 +4,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class IO {
@@ -21,15 +23,44 @@ public class IO {
 		return Files.newBufferedWriter(path);
 	}
 
-	public static void write(Path path, Iterable<String> toWrite)
-			throws IOException {
-		Files.write(path, toWrite);
+	/**
+	 * @note has the addition of closing the writer after consuming it.
+	 */
+	public static void write(Path path, Consumer<BufferedWriter> consumer) {
+		BufferedWriter writer;
+		try {
+			writer = writer(path);
+			consumer.accept(writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	public static void writeLine(BufferedWriter writer, String line)
-			throws IOException {
-		writer.write(line);
-		writer.newLine();
+
+	public static void write(Path path, Iterable<String> toWrite) {
+		try {
+			Files.write(path, toWrite);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void writeLine(BufferedWriter writer, String line) {
+		try {
+			writer.write(line);
+			writer.newLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void replace(Path source, Path toReplace) {
+		try {
+			Files.copy(source, toReplace, StandardCopyOption.REPLACE_EXISTING);
+			Files.delete(source);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

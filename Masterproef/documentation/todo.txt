@@ -1,0 +1,4 @@
+rainbow stoplist, filter out by frequency (less than 3 times)
+no stemming
+70%-30% train/test
+weka

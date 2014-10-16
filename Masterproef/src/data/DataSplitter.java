@@ -22,14 +22,10 @@ public class DataSplitter {
 		BufferedWriter trainWriter = IO.writer(train);
 		Random r = new Random();
 		lines.forEach(l -> {
-			try {
-				if (r.nextDouble() < testRatio)
-					IO.writeLine(testWriter, l);
-				else
-					IO.writeLine(trainWriter, l);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			if (r.nextDouble() < testRatio)
+				IO.writeLine(testWriter, l);
+			else
+				IO.writeLine(trainWriter, l);
 		});
 		testWriter.close();
 		trainWriter.close();

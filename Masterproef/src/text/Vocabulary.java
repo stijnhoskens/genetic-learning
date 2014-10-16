@@ -39,6 +39,10 @@ public class Vocabulary extends AbstractVocabulary<String> {
 				naturalOrder(), false);
 	}
 
+	public static void export(Path output, Stream<WordFrequencyPair> stream) {
+		
+	}
+
 	public static void buildAndExport(Path output, Path... input)
 			throws IOException {
 		build(input).export(output);
@@ -105,9 +109,13 @@ public class Vocabulary extends AbstractVocabulary<String> {
 		}
 
 		public static WithFrequency load(Path path) throws IOException {
-			return new WithFrequency(IO.allLines(path).stream()
-					.map(WordFrequencyPair::new).collect(Collectors.toList()),
-					naturalOrder(), true);
+			return new WithFrequency(loadStream(path).collect(
+					Collectors.toList()), naturalOrder(), true);
+		}
+
+		public static Stream<WordFrequencyPair> loadStream(Path path)
+				throws IOException {
+			return IO.lines(path).map(WordFrequencyPair::new);
 		}
 	}
 
