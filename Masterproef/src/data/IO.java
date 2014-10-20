@@ -38,6 +38,15 @@ public class IO {
 		}
 	}
 
+	public static Stream<Path> filesIn(Path dir) {
+		try {
+			return Files.list(dir);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Stream.empty();
+		}
+	}
+
 	/**
 	 * @note has the addition of closing the writer after consuming it.
 	 */

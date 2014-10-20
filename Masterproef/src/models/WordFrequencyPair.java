@@ -1,4 +1,4 @@
-package text;
+package models;
 
 public class WordFrequencyPair implements CharSequence,
 		Comparable<WordFrequencyPair> {

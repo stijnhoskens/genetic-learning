@@ -6,20 +6,20 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.function.Predicate;
 
+import models.WordFrequencyPair;
 import data.DataSet;
 import data.IO;
 
 public class VocabularyFilter {
 
-	/**
-	 * @param voc_freq
-	 *            the path of voc_freq.txt to filter
-	 * @param voc
-	 *            the path to voc.txt
-	 */
-	public static void filter(Path voc_freq, Path voc) throws IOException {
-		Predicate<WordFrequencyPair> filter = wfp -> !Stopwords.contains(wfp
-				.getWord()) && wfp.getFrequency() > 2;
+	private static Predicate<WordFrequencyPair> filter = wfp -> !Stopwords
+			.contains(wfp.getWord())
+			&& wfp.getFrequency() > 2
+			&& !wfp.chars().allMatch(c -> !Character.isDigit(c));
+
+	public static void filter(DataSet data) throws IOException {
+		Path voc_freq = data.vocFreq();
+		Path voc = data.voc();
 		// Dirty hack, try this without using a temporary file which is an exact
 		// copy of voc_freq, and is read-only.
 		Path temp = Files.createTempFile(voc_freq.getParent(), null, null);
@@ -47,7 +47,7 @@ public class VocabularyFilter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		filter(DataSet.TWENTY_NG.vocFreq(), DataSet.TWENTY_NG.voc());
+		filter(DataSet.MOVIES);
 	}
 
 }

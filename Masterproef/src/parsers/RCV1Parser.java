@@ -17,20 +17,25 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import text.SentenceProcessing;
 
-public class RCV1Parser {
+public class RCV1Parser implements DataSetParser {
 
 	private Writer writer;
 	private int count;
+	private final Path output;
+
+	public RCV1Parser(Path output) {
+		this.output = output;
+	}
 
 	public static void main(String[] args) throws Exception {
 		Path input = Paths.get("C:\\Users\\User\\Documents\\School\\"
 				+ "Masterproef\\test\\rcv1");
 		Path output = Paths.get("C:\\Users\\User\\Documents\\School\\"
 				+ "Masterproef\\test\\rcv2.txt");
-		new RCV1Parser().parse(input, output);
+		new RCV1Parser(output).parse(input);
 	}
 
-	public void parse(Path input, Path output) throws Exception {
+	public void parse(Path input) throws Exception {
 		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 		Handler handler = new Handler();
 		writer = Files.newBufferedWriter(output);

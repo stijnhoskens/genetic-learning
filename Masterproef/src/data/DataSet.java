@@ -14,7 +14,6 @@ public class DataSet {
 	public static final DataSet CLASSIC = new DataSet("datasets/classic");
 	public static final DataSet DMOZ = new DataSet("datasets/dmoz");
 	public static final DataSet MOVIES = new DataSet("datasets/movies");
-	public static final DataSet OSHUMED = new DataSet("datasets/oshumed");
 	public static final DataSet R52 = new DataSet("datasets/r52");
 	public static final DataSet RCV1 = new DataSet("datasets/rcv1");
 	public static final DataSet WEBKB = new DataSet("datasets/webkb");
@@ -24,6 +23,10 @@ public class DataSet {
 
 	public DataSet(String directory) {
 		this.directory = directory;
+	}
+
+	public Path directory() {
+		return Paths.get(directory);
 	}
 
 	public Path test() {

@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import models.WordFrequencyPair;
 import data.DataSet;
 import data.IO;
 
@@ -32,26 +33,22 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	 * every line is the category followed by each word in the form
 	 * "word:frequency".
 	 */
-	public static Vocabulary build(Path... path) {
-		return new Vocabulary(wordFreqPairsOf(path).map(
+	public static Vocabulary build(DataSet data) {
+		return new Vocabulary(wordFreqPairsOf(data).map(
 				WordFrequencyPair::getWord).collect(Collectors.toSet()),
 				naturalOrder(), false);
 	}
 
-	public static void export(Path output, Stream<WordFrequencyPair> stream) {
-
-	}
-
-	public static void buildAndExport(Path output, Path... input) {
-		build(input).export(output);
+	public static void buildAndExport(DataSet data) {
+		build(data).export(data.voc());
 	}
 
 	public static Vocabulary load(Path path) {
 		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
-	private static Stream<WordFrequencyPair> wordFreqPairsOf(Path... path) {
-		return Arrays.stream(path).flatMap(p -> IO.lines(p))
+	private static Stream<WordFrequencyPair> wordFreqPairsOf(DataSet data) {
+		return Stream.of(data.train(), data.test()).flatMap(p -> IO.lines(p))
 				.map(s -> s.substring(s.indexOf(' ') + 1))
 				.flatMap(l -> Arrays.stream(l.split(" ")))
 				.map(WordFrequencyPair::new);
@@ -79,9 +76,9 @@ public class Vocabulary extends AbstractVocabulary<String> {
 			super(words, naturalOrder(), false);
 		}
 
-		public static WithFrequency build(Path... path) {
+		public static WithFrequency build(DataSet data) {
 			return new WithFrequency(
-					wordFreqPairsOf(path)
+					wordFreqPairsOf(data)
 							.collect(
 									Collectors
 											.groupingBy(
@@ -95,13 +92,17 @@ public class Vocabulary extends AbstractVocabulary<String> {
 							.collect(Collectors.toSet()), naturalOrder(), false);
 		}
 
-		public static void buildAndExport(Path output, Path... input) {
-			build(input).export(output);
+		public static void buildAndExport(DataSet data) {
+			build(data).export(data.vocFreq());
 		}
 
-		public static WithFrequency load(Path path) {
-			return new WithFrequency(loadStream(path).collect(
+		public static WithFrequency load(DataSet data) {
+			return new WithFrequency(loadStream(data).collect(
 					Collectors.toList()), naturalOrder(), true);
+		}
+
+		public static Stream<WordFrequencyPair> loadStream(DataSet data) {
+			return loadStream(data.vocFreq());
 		}
 
 		public static Stream<WordFrequencyPair> loadStream(Path path) {
@@ -110,9 +111,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	}
 
 	public static void main(String[] args) {
-		buildAndExport(DataSet.TWENTY_NG.voc(), DataSet.TWENTY_NG.train(),
-				DataSet.TWENTY_NG.test());
-		WithFrequency.buildAndExport(DataSet.TWENTY_NG.vocFreq(),
-				DataSet.TWENTY_NG.train(), DataSet.TWENTY_NG.test());
+		buildAndExport(DataSet.MOVIES);
+		WithFrequency.buildAndExport(DataSet.MOVIES);
 	}
 }

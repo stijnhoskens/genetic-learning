@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -32,8 +31,8 @@ public class DataSplitter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		new DataSplitter(Paths.get("datasets/rcv1/rcv1.txt")).split(
-				DataSet.RCV1.test(), DataSet.RCV1.train(), 0.3d);
+		new DataSplitter(DataSet.MOVIES.directory().resolve("instances.txt"))
+				.split(DataSet.MOVIES.test(), DataSet.MOVIES.train(), 0.3d);
 	}
 
 }
