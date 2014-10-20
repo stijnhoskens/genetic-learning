@@ -20,24 +20,16 @@ public class VocabularyFilter {
 		IO.write(
 				temp,
 				w -> {
-					try {
-						Vocabulary.WithFrequency
-								.loadStream(voc_freq)
-								.filter(wfp -> !Stopwords.contains(wfp
-										.getWord()) && wfp.getFrequency() > 2)
-								.forEach(wfp -> IO.writeLine(w, wfp.toString()));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					Vocabulary.WithFrequency
+							.loadStream(voc_freq)
+							.filter(wfp -> !Stopwords.contains(wfp.getWord())
+									&& wfp.getFrequency() > 2)
+							.forEach(wfp -> IO.writeLine(w, wfp.toString()));
 				});
 		Path temp2 = Files.createTempFile(voc_freq.getParent(), null, null);
 		IO.write(temp2, w -> {
-			try {
-				IO.lines(temp).map(s -> new WordFrequencyPair(s).getWord())
-						.forEach(s -> IO.writeLine(w, s));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			IO.lines(temp).map(s -> new WordFrequencyPair(s).getWord())
+					.forEach(s -> IO.writeLine(w, s));
 		});
 		IO.replace(temp, voc_freq);
 		IO.replace(temp2, voc);

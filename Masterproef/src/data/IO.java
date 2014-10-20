@@ -5,22 +5,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class IO {
 
-	public static Stream<String> lines(Path path) throws IOException {
-		return Files.lines(path);
+	public static Stream<String> lines(Path path) {
+		try {
+			return Files.lines(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Stream.empty();
+		}
 	}
 
-	public static List<String> allLines(Path path) throws IOException {
-		return Files.readAllLines(path);
+	public static List<String> allLines(Path path) {
+		try {
+			return Files.readAllLines(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
 	}
 
-	public static BufferedWriter writer(Path path) throws IOException {
-		return Files.newBufferedWriter(path);
+	public static BufferedWriter writer(Path path) {
+		try {
+			return Files.newBufferedWriter(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -37,7 +53,8 @@ public class IO {
 		}
 	}
 
-	public static void write(Path path, Iterable<String> toWrite) {
+	public static <T extends CharSequence> void write(Path path,
+			Iterable<T> toWrite) {
 		try {
 			Files.write(path, toWrite);
 		} catch (IOException e) {

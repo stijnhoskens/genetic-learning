@@ -1,12 +1,12 @@
 package text;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
+import data.IO;
 
 abstract class AbstractVocabulary<T extends CharSequence> {
 
@@ -19,8 +19,8 @@ abstract class AbstractVocabulary<T extends CharSequence> {
 			this.terms.sort(c);
 	}
 
-	public void export(Path path) throws IOException {
-		Files.write(path, terms);
+	public void export(Path path) {
+		IO.write(path, terms);
 	}
 
 	public T getTerm(int index) throws IndexOutOfBoundsException {

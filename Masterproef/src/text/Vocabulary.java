@@ -1,6 +1,5 @@
 package text;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,34 +32,27 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	 * every line is the category followed by each word in the form
 	 * "word:frequency".
 	 */
-	public static Vocabulary build(Path... path) throws IOException {
+	public static Vocabulary build(Path... path) {
 		return new Vocabulary(wordFreqPairsOf(path).map(
 				WordFrequencyPair::getWord).collect(Collectors.toSet()),
 				naturalOrder(), false);
 	}
 
 	public static void export(Path output, Stream<WordFrequencyPair> stream) {
-		
+
 	}
 
-	public static void buildAndExport(Path output, Path... input)
-			throws IOException {
+	public static void buildAndExport(Path output, Path... input) {
 		build(input).export(output);
 	}
 
-	public static Vocabulary load(Path path) throws IOException {
+	public static Vocabulary load(Path path) {
 		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
-	private static Stream<WordFrequencyPair> wordFreqPairsOf(Path... path)
-			throws IOException {
-		return Arrays.stream(path).flatMap(p -> {
-			try {
-				return IO.lines(p);
-			} catch (Exception e) {
-				return Stream.empty();
-			}
-		}).map(s -> s.substring(s.indexOf(' ') + 1))
+	private static Stream<WordFrequencyPair> wordFreqPairsOf(Path... path) {
+		return Arrays.stream(path).flatMap(p -> IO.lines(p))
+				.map(s -> s.substring(s.indexOf(' ') + 1))
 				.flatMap(l -> Arrays.stream(l.split(" ")))
 				.map(WordFrequencyPair::new);
 	}
@@ -87,7 +79,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 			super(words, naturalOrder(), false);
 		}
 
-		public static WithFrequency build(Path... path) throws IOException {
+		public static WithFrequency build(Path... path) {
 			return new WithFrequency(
 					wordFreqPairsOf(path)
 							.collect(
@@ -103,23 +95,21 @@ public class Vocabulary extends AbstractVocabulary<String> {
 							.collect(Collectors.toSet()), naturalOrder(), false);
 		}
 
-		public static void buildAndExport(Path output, Path... input)
-				throws IOException {
+		public static void buildAndExport(Path output, Path... input) {
 			build(input).export(output);
 		}
 
-		public static WithFrequency load(Path path) throws IOException {
+		public static WithFrequency load(Path path) {
 			return new WithFrequency(loadStream(path).collect(
 					Collectors.toList()), naturalOrder(), true);
 		}
 
-		public static Stream<WordFrequencyPair> loadStream(Path path)
-				throws IOException {
+		public static Stream<WordFrequencyPair> loadStream(Path path) {
 			return IO.lines(path).map(WordFrequencyPair::new);
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		buildAndExport(DataPath.TWENTY_NG_VOC, DataPath.TWENTY_NG_TRAIN,
 				DataPath.TWENTY_NG_TEST);
 		WithFrequency.buildAndExport(DataPath.TWENTY_NG_VOC_FREQ,
