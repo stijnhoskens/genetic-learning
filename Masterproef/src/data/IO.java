@@ -80,7 +80,7 @@ public class IO {
 
 	public static void replace(Path source, Path toReplace) {
 		try {
-			Files.deleteIfExists(toReplace);
+			Files.delete(toReplace);
 			Files.move(source, toReplace);
 		} catch (IOException e) {
 			e.printStackTrace();

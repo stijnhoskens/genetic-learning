@@ -1,34 +1,36 @@
 package models;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
-public class Instance {
+public class Instance extends AbstractInstance<IndexFrequencyPair> {
 
-	private final String topic;
-	private final List<WordFrequencyPair> words;
-
-	public Instance(String topic, List<WordFrequencyPair> words) {
-		this.topic = topic;
-		this.words = words;
+	/**
+	 * @pre words == sorted
+	 */
+	public Instance(String topic, List<IndexFrequencyPair> words) {
+		super(topic, words);
 	}
 
+	public Instance(String topic, List<IndexFrequencyPair> words,
+			boolean isSorted) {
+		super(topic, words);
+	}
+
+	/**
+	 * @pre words == sorted
+	 */
 	public Instance(String line) {
-		String[] array = line.split(" ");
-		this.topic = array[0];
-		words = array.length == 1 ? Collections.emptyList() : Arrays
-				.stream(Arrays.copyOfRange(array, 1, array.length))
-				.map(WordFrequencyPair::new).collect(Collectors.toList());
+		super(line, true);
 	}
 
-	public String getTopic() {
-		return topic;
+	public Instance(String line, boolean isSorted) {
+		super(line);
 	}
 
-	public List<WordFrequencyPair> getWords() {
-		return Collections.unmodifiableList(words);
+	@Override
+	protected Function<String, IndexFrequencyPair> constructT() {
+		return IndexFrequencyPair::new;
 	}
 
 }

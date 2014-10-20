@@ -1,5 +1,6 @@
 - in format CATEGORY{ word:freq}* using package parsers + SentenceProcessing
 - test-train split using DataSplitter
 - creating a vocabulary using Vocabulary
-- filter that vocabulary (no stopwords, no words with frequency of 2 or less) 
-with VocabularyFilter (reduction by half)
+- filter that vocabulary (no stopwords, no words with frequency of 2 or less, 
+no words with digits in them) with VocabularyFilter (reduction by half), this also
+removes these unnecessary words out of the training and testing files.

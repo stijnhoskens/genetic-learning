@@ -27,5 +27,9 @@ abstract class AbstractVocabulary<T extends CharSequence> {
 		return terms.get(index);
 	}
 
+	public boolean contains(String word) {
+		return indexOf(word) >= 0;
+	}
+
 	public abstract int indexOf(String word);
 }
