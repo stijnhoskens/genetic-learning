@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import data.DataPath;
+import data.DataSet;
 import data.IO;
 
 public class Vocabulary extends AbstractVocabulary<String> {
@@ -110,9 +110,9 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	}
 
 	public static void main(String[] args) {
-		buildAndExport(DataPath.TWENTY_NG_VOC, DataPath.TWENTY_NG_TRAIN,
-				DataPath.TWENTY_NG_TEST);
-		WithFrequency.buildAndExport(DataPath.TWENTY_NG_VOC_FREQ,
-				DataPath.TWENTY_NG_TRAIN, DataPath.TWENTY_NG_TEST);
+		buildAndExport(DataSet.TWENTY_NG.voc(), DataSet.TWENTY_NG.train(),
+				DataSet.TWENTY_NG.test());
+		WithFrequency.buildAndExport(DataSet.TWENTY_NG.vocFreq(),
+				DataSet.TWENTY_NG.train(), DataSet.TWENTY_NG.test());
 	}
 }

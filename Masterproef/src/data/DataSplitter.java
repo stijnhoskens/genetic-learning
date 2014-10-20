@@ -33,7 +33,7 @@ public class DataSplitter {
 
 	public static void main(String[] args) throws IOException {
 		new DataSplitter(Paths.get("datasets/rcv1/rcv1.txt")).split(
-				DataPath.RCV1_TEST, DataPath.RCV1_TRAIN, 0.3d);
+				DataSet.RCV1.test(), DataSet.RCV1.train(), 0.3d);
 	}
 
 }

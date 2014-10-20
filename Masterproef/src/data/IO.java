@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -43,9 +42,8 @@ public class IO {
 	 * @note has the addition of closing the writer after consuming it.
 	 */
 	public static void write(Path path, Consumer<BufferedWriter> consumer) {
-		BufferedWriter writer;
 		try {
-			writer = writer(path);
+			BufferedWriter writer = writer(path);
 			consumer.accept(writer);
 			writer.close();
 		} catch (IOException e) {
@@ -73,8 +71,8 @@ public class IO {
 
 	public static void replace(Path source, Path toReplace) {
 		try {
-			Files.copy(source, toReplace, StandardCopyOption.REPLACE_EXISTING);
-			Files.delete(source);
+			Files.deleteIfExists(toReplace);
+			Files.move(source, toReplace);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

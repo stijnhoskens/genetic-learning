@@ -3,8 +3,10 @@ package text;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.function.Predicate;
 
-import data.DataPath;
+import data.DataSet;
 import data.IO;
 
 public class VocabularyFilter {
@@ -16,27 +18,36 @@ public class VocabularyFilter {
 	 *            the path to voc.txt
 	 */
 	public static void filter(Path voc_freq, Path voc) throws IOException {
+		Predicate<WordFrequencyPair> filter = wfp -> !Stopwords.contains(wfp
+				.getWord()) && wfp.getFrequency() > 2;
+		// Dirty hack, try this without using a temporary file which is an exact
+		// copy of voc_freq, and is read-only.
 		Path temp = Files.createTempFile(voc_freq.getParent(), null, null);
+		Files.copy(voc_freq, temp, StandardCopyOption.REPLACE_EXISTING);
+		Path temp1 = Files.createTempFile(voc_freq.getParent(),
+				"voc_freq_temp", null);
 		IO.write(
-				temp,
+				temp1,
 				w -> {
-					Vocabulary.WithFrequency
-							.loadStream(voc_freq)
-							.filter(wfp -> !Stopwords.contains(wfp.getWord())
-									&& wfp.getFrequency() > 2)
-							.forEach(wfp -> IO.writeLine(w, wfp.toString()));
+					Vocabulary.WithFrequency.loadStream(temp).filter(filter)
+							.map(WordFrequencyPair::toString)
+							.forEach(s -> IO.writeLine(w, s));
 				});
-		Path temp2 = Files.createTempFile(voc_freq.getParent(), null, null);
-		IO.write(temp2, w -> {
-			IO.lines(temp).map(s -> new WordFrequencyPair(s).getWord())
-					.forEach(s -> IO.writeLine(w, s));
-		});
-		IO.replace(temp, voc_freq);
+		Path temp2 = Files.createTempFile(voc.getParent(), "voc_temp", null);
+		IO.write(
+				temp2,
+				w -> {
+					Vocabulary.WithFrequency.loadStream(temp1)
+							.map(WordFrequencyPair::getWord)
+							.forEach(s -> IO.writeLine(w, s));
+				});
+		IO.replace(temp1, voc_freq);
 		IO.replace(temp2, voc);
+		Files.delete(temp);
 	}
 
 	public static void main(String[] args) throws IOException {
-		filter(DataPath.TWENTY_NG_VOC_FREQ, DataPath.TWENTY_NG_VOC);
+		filter(DataSet.TWENTY_NG.vocFreq(), DataSet.TWENTY_NG.voc());
 	}
 
 }
