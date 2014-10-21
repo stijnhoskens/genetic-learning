@@ -32,7 +32,7 @@ public class DataSplitter {
 
 	public static void main(String[] args) throws IOException {
 		new DataSplitter(DataSet.MOVIES.directory().resolve("instances.txt"))
-				.split(DataSet.MOVIES.test(), DataSet.MOVIES.train(), 0.3d);
+				.split(DataSet.MOVIES.testExplicit(), DataSet.MOVIES.trainExplicit(), 0.3d);
 	}
 
 }

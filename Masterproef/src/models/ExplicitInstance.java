@@ -14,18 +14,18 @@ public class ExplicitInstance extends AbstractInstance<WordFrequencyPair> {
 
 	public ExplicitInstance(String topic, List<WordFrequencyPair> words,
 			boolean isSorted) {
-		super(topic, words);
+		super(topic, words, isSorted);
 	}
 
 	/**
 	 * @pre words == sorted
 	 */
 	public ExplicitInstance(String line) {
-		super(line, true);
+		super(line);
 	}
 
 	public ExplicitInstance(String line, boolean isSorted) {
-		super(line);
+		super(line, isSorted);
 	}
 
 	@Override

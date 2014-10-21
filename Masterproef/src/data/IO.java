@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -78,10 +79,13 @@ public class IO {
 		}
 	}
 
+	/**
+	 * IMPORTANT: make sure any stream or writer using one of both paths is
+	 * closed!
+	 */
 	public static void replace(Path source, Path toReplace) {
 		try {
-			Files.delete(toReplace);
-			Files.move(source, toReplace);
+			Files.move(source, toReplace, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

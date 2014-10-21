@@ -14,18 +14,18 @@ public class Instance extends AbstractInstance<IndexFrequencyPair> {
 
 	public Instance(String topic, List<IndexFrequencyPair> words,
 			boolean isSorted) {
-		super(topic, words);
+		super(topic, words, isSorted);
 	}
 
 	/**
 	 * @pre words == sorted
 	 */
 	public Instance(String line) {
-		super(line, true);
+		super(line);
 	}
 
 	public Instance(String line, boolean isSorted) {
-		super(line);
+		super(line, isSorted);
 	}
 
 	@Override

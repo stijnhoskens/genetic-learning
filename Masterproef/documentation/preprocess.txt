@@ -3,4 +3,8 @@
 - creating a vocabulary using Vocabulary
 - filter that vocabulary (no stopwords, no words with frequency of 2 or less, 
 no words with digits in them) with VocabularyFilter (reduction by half), this also
-removes these unnecessary words out of the training and testing files.
+removes these unnecessary words out of the training and testing files
+- if your training and testing instances are not sorted, this is the moment to do so, 
+using ExplicitDataSorter
+- transform each word frequency pair to an index frequency pair using the WordIndexer
+

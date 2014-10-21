@@ -43,12 +43,17 @@ public class Vocabulary extends AbstractVocabulary<String> {
 		build(data).export(data.voc());
 	}
 
+	public static Vocabulary load(DataSet data) {
+		return load(data.voc());
+	}
+
 	public static Vocabulary load(Path path) {
 		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
 	private static Stream<WordFrequencyPair> wordFreqPairsOf(DataSet data) {
-		return Stream.of(data.train(), data.test()).flatMap(p -> IO.lines(p))
+		return Stream.of(data.trainExplicit(), data.testExplicit())
+				.flatMap(p -> IO.lines(p))
 				.map(s -> s.substring(s.indexOf(' ') + 1))
 				.flatMap(l -> Arrays.stream(l.split(" ")))
 				.map(WordFrequencyPair::new);
