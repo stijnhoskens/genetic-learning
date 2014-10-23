@@ -1,11 +1,12 @@
 package pre.parsers;
 
+import io.IO;
+
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import models.ExplicitInstance;
 import models.Instance;
-import pre.data.IO;
 
 public class InstancesParser {
 	

@@ -11,11 +11,12 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import models.DataSet;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import pre.data.DataSet;
 import pre.text.SentenceProcessing;
 
 public class RCV1Parser implements DataSetParser {

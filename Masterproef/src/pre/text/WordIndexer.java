@@ -1,17 +1,19 @@
 package pre.text;
 
+import io.IO;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import models.DataSet;
 import models.ExplicitInstance;
 import models.IndexFrequencyPair;
 import models.Instance;
+import models.Vocabulary;
 import models.WordFrequencyPair;
-import pre.data.DataSet;
-import pre.data.IO;
 
 public class WordIndexer {
 

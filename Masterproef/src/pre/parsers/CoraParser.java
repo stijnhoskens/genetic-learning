@@ -1,11 +1,12 @@
 package pre.parsers;
 
+import io.IO;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import pre.data.DataSet;
-import pre.data.IO;
+import models.DataSet;
 import pre.text.SentenceProcessing;
 
 public class CoraParser implements DataSetParser {

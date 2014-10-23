@@ -2,11 +2,11 @@ package pre;
 
 import java.nio.file.Path;
 
-import pre.data.DataSet;
+import models.DataSet;
+import models.Vocabulary;
 import pre.data.DataSplitter;
 import pre.parsers.CoraParser;
 import pre.parsers.DataSetParser;
-import pre.text.Vocabulary;
 import pre.text.VocabularyFilter;
 import pre.text.WordIndexer;
 

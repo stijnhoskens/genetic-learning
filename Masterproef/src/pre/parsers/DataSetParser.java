@@ -2,7 +2,7 @@ package pre.parsers;
 
 import java.nio.file.Path;
 
-import pre.data.DataSet;
+import models.DataSet;
 
 public interface DataSetParser {
 

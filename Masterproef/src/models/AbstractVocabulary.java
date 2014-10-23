@@ -1,12 +1,12 @@
-package pre.text;
+package models;
+
+import io.IO;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
-import pre.data.IO;
 
 abstract class AbstractVocabulary<T extends CharSequence> {
 

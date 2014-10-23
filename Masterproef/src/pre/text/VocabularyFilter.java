@@ -1,5 +1,7 @@
 package pre.text;
 
+import io.IO;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,11 +10,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import models.DataSet;
 import models.ExplicitInstance;
+import models.Vocabulary;
 import models.WordFrequencyPair;
-import pre.data.DataSet;
 import pre.data.ExplicitDataSorter;
-import pre.data.IO;
 import pre.parsers.InstancesParser;
 
 public class VocabularyFilter {

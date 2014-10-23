@@ -1,4 +1,6 @@
-package pre.text;
+package models;
+
+import io.IO;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -7,10 +9,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import models.WordFrequencyPair;
-import pre.data.DataSet;
-import pre.data.IO;
 
 public class Vocabulary extends AbstractVocabulary<String> {
 

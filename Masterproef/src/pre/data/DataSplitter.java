@@ -1,11 +1,15 @@
 package pre.data;
 
+import io.IO;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 import java.util.stream.Stream;
+
+import models.DataSet;
 
 public class DataSplitter {
 
