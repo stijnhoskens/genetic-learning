@@ -1,16 +1,17 @@
-package parsers;
+package pre.parsers;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import text.SentenceProcessing;
-import data.DataSet;
-import data.IO;
+import pre.data.DataSet;
+import pre.data.IO;
+import pre.text.SentenceProcessing;
 
 public class MoviesParser implements DataSetParser {
 
-	public void parse(Path directory) throws IOException {
+	@Override
+	public Path parse(Path directory) throws IOException {
 		Path temp = Files.createFile(directory.resolve("instances.txt"));
 		IO.write(temp, w -> 
 			IO.filesIn(directory)
@@ -24,10 +25,16 @@ public class MoviesParser implements DataSetParser {
 						" " + processed);
 					}))
 		);
+		return temp;
 	}
 
 	public static void main(String[] args) throws IOException {
 		new MoviesParser().parse(DataSet.MOVIES.directory());
+	}
+
+	@Override
+	public DataSet getData() {
+		return DataSet.MOVIES;
 	}
 
 }

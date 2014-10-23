@@ -1,8 +1,7 @@
-package data;
+package pre.data;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class DataSet {
@@ -16,6 +15,7 @@ public class DataSet {
 
 	public static final DataSet TWENTY_NG = new DataSet("datasets/20ng");
 	public static final DataSet CLASSIC = new DataSet("datasets/classic");
+	public static final DataSet CORA = new DataSet("datasets/cora");
 	public static final DataSet DMOZ = new DataSet("datasets/dmoz");
 	public static final DataSet MOVIES = new DataSet("datasets/movies");
 	public static final DataSet R52 = new DataSet("datasets/r52");
@@ -23,8 +23,8 @@ public class DataSet {
 	public static final DataSet WEBKB = new DataSet("datasets/webkb");
 	public static final DataSet WIPO = new DataSet("datasets/wipo");
 
-	public static final Stream<DataSet> ALL = Arrays.stream(new DataSet[] {
-			TWENTY_NG, CLASSIC, DMOZ, MOVIES, R52, RCV1, WEBKB, WIPO });
+	public static final Stream<DataSet> ALL = Stream.of(TWENTY_NG, CLASSIC,
+			CORA, DMOZ, MOVIES, R52, RCV1, WEBKB, WIPO);
 
 	private String directory;
 

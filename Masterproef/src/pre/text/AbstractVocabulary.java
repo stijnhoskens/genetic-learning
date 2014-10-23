@@ -1,4 +1,4 @@
-package text;
+package pre.text;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import data.IO;
+import pre.data.IO;
 
 abstract class AbstractVocabulary<T extends CharSequence> {
 

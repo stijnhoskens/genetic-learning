@@ -1,4 +1,4 @@
-package text;
+package pre.text;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package text;
+package pre.text;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import models.WordFrequencyPair;
-import data.DataSet;
-import data.IO;
+import pre.data.DataSet;
+import pre.data.IO;
 
 public class Vocabulary extends AbstractVocabulary<String> {
 
@@ -116,7 +116,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	}
 
 	public static void main(String[] args) {
-		buildAndExport(DataSet.MOVIES);
-		WithFrequency.buildAndExport(DataSet.MOVIES);
+		buildAndExport(DataSet.CORA);
+		WithFrequency.buildAndExport(DataSet.CORA);
 	}
 }

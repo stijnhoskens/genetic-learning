@@ -1,4 +1,4 @@
-package parsers;
+package pre.parsers;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -15,7 +15,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import text.SentenceProcessing;
+import pre.data.DataSet;
+import pre.text.SentenceProcessing;
 
 public class RCV1Parser implements DataSetParser {
 
@@ -35,7 +36,7 @@ public class RCV1Parser implements DataSetParser {
 		new RCV1Parser(output).parse(input);
 	}
 
-	public void parse(Path input) throws Exception {
+	public Path parse(Path input) throws Exception {
 		SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 		Handler handler = new Handler();
 		writer = Files.newBufferedWriter(output);
@@ -48,6 +49,7 @@ public class RCV1Parser implements DataSetParser {
 				e.printStackTrace();
 			}
 		});
+		return output;
 	}
 
 	private class Handler extends DefaultHandler {
@@ -131,5 +133,10 @@ public class RCV1Parser implements DataSetParser {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+	}
+
+	@Override
+	public DataSet getData() {
+		return DataSet.RCV1;
 	}
 }

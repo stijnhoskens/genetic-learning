@@ -1,4 +1,4 @@
-package text;
+package pre.text;
 
 import java.util.Arrays;
 import java.util.List;

@@ -8,3 +8,4 @@ removes these unnecessary words out of the training and testing files
 using ExplicitDataSorter
 - transform each word frequency pair to an index frequency pair using the WordIndexer
 
+For a detailed example, look at the Preprocessing class

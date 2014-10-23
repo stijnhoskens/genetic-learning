@@ -1,4 +1,4 @@
-package data;
+package pre.data;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

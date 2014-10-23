@@ -1,4 +1,4 @@
-package data;
+package pre.data;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,14 +9,11 @@ import java.util.stream.Stream;
 
 public class DataSplitter {
 
-	public final Stream<String> lines;
-
-	public DataSplitter(Path input) throws IOException {
-		lines = Files.lines(input);
-	}
-
-	public void split(Path test, Path train, double testRatio)
+	public static void split(Path input, DataSet data, double testRatio)
 			throws IOException {
+		Stream<String> lines = Files.lines(input);
+		Path test = data.testExplicit();
+		Path train = data.trainExplicit();
 		BufferedWriter testWriter = IO.writer(test);
 		BufferedWriter trainWriter = IO.writer(train);
 		Random r = new Random();
@@ -26,13 +23,14 @@ public class DataSplitter {
 			else
 				IO.writeLine(trainWriter, l);
 		});
+		lines.close();
 		testWriter.close();
 		trainWriter.close();
 	}
 
 	public static void main(String[] args) throws IOException {
-		new DataSplitter(DataSet.MOVIES.directory().resolve("instances.txt"))
-				.split(DataSet.MOVIES.testExplicit(), DataSet.MOVIES.trainExplicit(), 0.3d);
+		DataSplitter.split(DataSet.CORA.directory().resolve("cora.txt"),
+				DataSet.CORA, 0.3d);
 	}
 
 }
