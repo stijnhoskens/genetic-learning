@@ -1,4 +1,4 @@
-package models;
+package pre.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +38,8 @@ abstract class AbstractInstance<T extends Comparable<T>> {
 		String[] array = line.split(" ");
 		this.topic = array[0];
 		words = array.length == 1 ? Collections.emptyList() : Arrays
-				.stream(Arrays.copyOfRange(array, 1, array.length))
-				.map(constructT()).collect(Collectors.toList());
+				.stream(array, 1, array.length).map(constructT())
+				.collect(Collectors.toList());
 		if (!isSorted)
 			words.sort(Comparator.naturalOrder());
 	}

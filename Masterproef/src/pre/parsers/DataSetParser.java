@@ -2,7 +2,7 @@ package pre.parsers;
 
 import java.nio.file.Path;
 
-import models.DataSet;
+import pre.models.FullDataSet;
 
 public interface DataSetParser {
 
@@ -11,6 +11,6 @@ public interface DataSetParser {
 	 */
 	Path parse(Path directory) throws Exception;
 	
-	DataSet getData();
+	FullDataSet getData();
 
 }

@@ -10,11 +10,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import models.DataSet;
-import models.ExplicitInstance;
-import models.Vocabulary;
-import models.WordFrequencyPair;
 import pre.data.ExplicitDataSorter;
+import pre.models.FullDataSet;
+import pre.models.ExplicitInstance;
+import pre.models.Vocabulary;
+import pre.models.WordFrequencyPair;
 import pre.parsers.InstancesParser;
 
 public class VocabularyFilter {
@@ -24,7 +24,7 @@ public class VocabularyFilter {
 			&& wfp.getFrequency() > 2
 			&& !wfp.getWord().chars().anyMatch(c -> Character.isDigit(c));
 
-	public static void filter(DataSet data) throws IOException {
+	public static void filter(FullDataSet data) throws IOException {
 
 		Path voc_freq = data.vocFreq();
 		Path voc = data.voc();
@@ -77,7 +77,7 @@ public class VocabularyFilter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		DataSet data = DataSet.WIPO;
+		FullDataSet data = FullDataSet.WIPO;
 		filter(data);
 		ExplicitDataSorter.sort(data);
 	}

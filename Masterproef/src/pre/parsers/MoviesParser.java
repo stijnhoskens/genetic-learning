@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import models.DataSet;
+import pre.models.FullDataSet;
 import pre.text.SentenceProcessing;
 
 public class MoviesParser implements DataSetParser {
@@ -30,12 +30,12 @@ public class MoviesParser implements DataSetParser {
 	}
 
 	public static void main(String[] args) throws IOException {
-		new MoviesParser().parse(DataSet.MOVIES.directory());
+		new MoviesParser().parse(FullDataSet.MOVIES.directory());
 	}
 
 	@Override
-	public DataSet getData() {
-		return DataSet.MOVIES;
+	public FullDataSet getData() {
+		return FullDataSet.MOVIES;
 	}
 
 }

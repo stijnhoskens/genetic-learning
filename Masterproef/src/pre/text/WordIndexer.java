@@ -8,18 +8,18 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import models.DataSet;
-import models.ExplicitInstance;
-import models.IndexFrequencyPair;
-import models.Instance;
-import models.Vocabulary;
-import models.WordFrequencyPair;
+import pre.models.FullDataSet;
+import pre.models.ExplicitInstance;
+import pre.models.IndexFrequencyPair;
+import pre.models.TextInstance;
+import pre.models.Vocabulary;
+import pre.models.WordFrequencyPair;
 
 public class WordIndexer {
 
 	private static Vocabulary voc;
 
-	public static void index(DataSet data) throws IOException {
+	public static void index(FullDataSet data) throws IOException {
 		voc = Vocabulary.load(data);
 		indexPath(data.testExplicit(), data.test());
 		indexPath(data.trainExplicit(), data.train());
@@ -42,14 +42,14 @@ public class WordIndexer {
 				pair.getFrequency());
 	}
 
-	private static Instance toIndexed(ExplicitInstance instance) {
-		return new Instance(instance.getTopic(), instance.getWords().stream()
+	private static TextInstance toIndexed(ExplicitInstance instance) {
+		return new TextInstance(instance.getTopic(), instance.getWords().stream()
 				.map(WordIndexer::toIndexed).collect(Collectors.toList()));
 	}
 
 	public static void main(String[] args) throws IOException {
-		DataSet[] datasets = { DataSet.CLASSIC, DataSet.MOVIES, DataSet.R52,
-				DataSet.RCV1, DataSet.WEBKB, DataSet.WIPO };
+		FullDataSet[] datasets = { FullDataSet.CLASSIC, FullDataSet.MOVIES, FullDataSet.R52,
+				FullDataSet.RCV1, FullDataSet.WEBKB, FullDataSet.WIPO };
 		Arrays.stream(datasets).forEach(data -> {
 			try {
 				WordIndexer.index(data);

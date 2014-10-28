@@ -1,4 +1,4 @@
-package models;
+package pre.models;
 
 import io.IO;
 
@@ -31,17 +31,17 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	 * every line is the category followed by each word in the form
 	 * "word:frequency".
 	 */
-	public static Vocabulary build(DataSet data) {
+	public static Vocabulary build(FullDataSet data) {
 		return new Vocabulary(wordFreqPairsOf(data).map(
 				WordFrequencyPair::getWord).collect(Collectors.toSet()),
 				naturalOrder(), false);
 	}
 
-	public static void buildAndExport(DataSet data) {
+	public static void buildAndExport(FullDataSet data) {
 		build(data).export(data.voc());
 	}
 
-	public static Vocabulary load(DataSet data) {
+	public static Vocabulary load(FullDataSet data) {
 		return load(data.voc());
 	}
 
@@ -49,7 +49,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
-	private static Stream<WordFrequencyPair> wordFreqPairsOf(DataSet data) {
+	private static Stream<WordFrequencyPair> wordFreqPairsOf(FullDataSet data) {
 		return Stream.of(data.trainExplicit(), data.testExplicit())
 				.flatMap(p -> IO.lines(p))
 				.map(s -> s.substring(s.indexOf(' ') + 1))
@@ -79,7 +79,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 			super(words, naturalOrder(), false);
 		}
 
-		public static WithFrequency build(DataSet data) {
+		public static WithFrequency build(FullDataSet data) {
 			return new WithFrequency(
 					wordFreqPairsOf(data)
 							.collect(
@@ -95,16 +95,16 @@ public class Vocabulary extends AbstractVocabulary<String> {
 							.collect(Collectors.toSet()), naturalOrder(), false);
 		}
 
-		public static void buildAndExport(DataSet data) {
+		public static void buildAndExport(FullDataSet data) {
 			build(data).export(data.vocFreq());
 		}
 
-		public static WithFrequency load(DataSet data) {
+		public static WithFrequency load(FullDataSet data) {
 			return new WithFrequency(loadStream(data).collect(
 					Collectors.toList()), naturalOrder(), true);
 		}
 
-		public static Stream<WordFrequencyPair> loadStream(DataSet data) {
+		public static Stream<WordFrequencyPair> loadStream(FullDataSet data) {
 			return loadStream(data.vocFreq());
 		}
 
@@ -114,7 +114,7 @@ public class Vocabulary extends AbstractVocabulary<String> {
 	}
 
 	public static void main(String[] args) {
-		buildAndExport(DataSet.CORA);
-		WithFrequency.buildAndExport(DataSet.CORA);
+		buildAndExport(FullDataSet.CORA);
+		WithFrequency.buildAndExport(FullDataSet.CORA);
 	}
 }

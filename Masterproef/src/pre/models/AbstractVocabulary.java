@@ -1,10 +1,11 @@
-package models;
+package pre.models;
 
 import io.IO;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -29,6 +30,14 @@ abstract class AbstractVocabulary<T extends CharSequence> {
 
 	public boolean contains(String word) {
 		return indexOf(word) >= 0;
+	}
+
+	public int size() {
+		return terms.size();
+	}
+
+	public List<T> listOfTerms() {
+		return Collections.unmodifiableList(terms);
 	}
 
 	public abstract int indexOf(String word);

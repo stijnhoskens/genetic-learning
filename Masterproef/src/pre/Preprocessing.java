@@ -2,9 +2,9 @@ package pre;
 
 import java.nio.file.Path;
 
-import models.DataSet;
-import models.Vocabulary;
 import pre.data.DataSplitter;
+import pre.models.FullDataSet;
+import pre.models.Vocabulary;
 import pre.parsers.CoraParser;
 import pre.parsers.DataSetParser;
 import pre.text.VocabularyFilter;
@@ -18,10 +18,10 @@ public class Preprocessing {
 	}
 
 	public static void preprocess(DataSetParser parser) throws Exception {
-		DataSet data = parser.getData();
+		FullDataSet data = parser.getData();
 		Path output = parser.parse(data.directory());
 		System.out.println("parsing done");
-		DataSplitter.split(output, data, 0.3d);
+		DataSplitter.splitIntoTrainTest(output, data, 0.3d);
 		System.out.println("splitting done");
 		Vocabulary.buildAndExport(data);
 		Vocabulary.WithFrequency.buildAndExport(data);

@@ -7,12 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import models.DataSet;
-import models.ExplicitInstance;
+import pre.models.FullDataSet;
+import pre.models.ExplicitInstance;
 
 public class ExplicitDataSorter {
 
-	public static void sort(DataSet data) throws IOException {
+	public static void sort(FullDataSet data) throws IOException {
 		sort(data.testExplicit());
 		sort(data.trainExplicit());
 	}
@@ -29,7 +29,7 @@ public class ExplicitDataSorter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		ExplicitDataSorter.sort(DataSet.R52);
+		ExplicitDataSorter.sort(FullDataSet.R52);
 	}
 
 }

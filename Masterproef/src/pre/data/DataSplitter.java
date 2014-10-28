@@ -9,15 +9,30 @@ import java.nio.file.Path;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import models.DataSet;
+import pre.models.FullDataSet;
 
 public class DataSplitter {
 
-	public static void split(Path input, DataSet data, double testRatio)
+	public static void splitIntoTrainTest(Path input, FullDataSet data,
+			double testRatio) throws IOException {
+		split(input, data.testExplicit(), data.trainExplicit(), testRatio);
+	}
+
+	public static void splitIntoEvoTrainTest(FullDataSet data, double ratio)
 			throws IOException {
+		split(data.test(), data.evoTest().testExplicit(), data.evoTrain()
+				.testExplicit(), ratio);
+		split(data.train(), data.evoTest().trainExplicit(), data.evoTrain()
+				.trainExplicit(), ratio);
+	}
+
+	private static void split(Path input, Path test, Path train,
+			double testRatio) throws IOException {
+		if (!Files.exists(test))
+			Files.createFile(test);
+		if (!Files.exists(train))
+			Files.createFile(train);
 		Stream<String> lines = Files.lines(input);
-		Path test = data.testExplicit();
-		Path train = data.trainExplicit();
 		BufferedWriter testWriter = IO.writer(test);
 		BufferedWriter trainWriter = IO.writer(train);
 		Random r = new Random();
@@ -33,8 +48,14 @@ public class DataSplitter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		DataSplitter.split(DataSet.CORA.directory().resolve("cora.txt"),
-				DataSet.CORA, 0.3d);
+		FullDataSet.ALL.forEach(data -> {
+			try {
+				DataSplitter.splitIntoEvoTrainTest(data, 0.5d);
+				System.out.println("splitting of " + data + " done");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 }

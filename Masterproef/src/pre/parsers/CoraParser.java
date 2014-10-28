@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import models.DataSet;
+import pre.models.FullDataSet;
 import pre.text.SentenceProcessing;
 
 public class CoraParser implements DataSetParser {
@@ -49,12 +49,12 @@ public class CoraParser implements DataSetParser {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new CoraParser().parse(DataSet.CORA.directory());
+		new CoraParser().parse(FullDataSet.CORA.directory());
 	}
 
 	@Override
-	public DataSet getData() {
-		return DataSet.CORA;
+	public FullDataSet getData() {
+		return FullDataSet.CORA;
 	}
 
 }

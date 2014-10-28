@@ -5,8 +5,8 @@ import io.IO;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import models.ExplicitInstance;
-import models.Instance;
+import pre.models.ExplicitInstance;
+import pre.models.TextInstance;
 
 public class InstancesParser {
 	
@@ -14,8 +14,8 @@ public class InstancesParser {
 		return IO.lines(input).map(ExplicitInstance::new);
 	}
 	
-	public static Stream<Instance> parse(Path input) {
-		return IO.lines(input).map(Instance::new);
+	public static Stream<TextInstance> parse(Path input) {
+		return IO.lines(input).map(TextInstance::new);
 	}
 
 }

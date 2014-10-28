@@ -21,6 +21,10 @@ public class IO {
 		}
 	}
 
+	public static Stream<String> linesOfMultiple(Path... paths) {
+		return Stream.of(paths).flatMap(p -> IO.lines(p));
+	}
+
 	public static List<String> allLines(Path path) {
 		try {
 			return Files.readAllLines(path);
@@ -71,8 +75,20 @@ public class IO {
 	}
 
 	public static void writeLine(BufferedWriter writer, String line) {
+		write(writer, line);
+		newLine(writer);
+	}
+
+	public static void write(BufferedWriter writer, String string) {
 		try {
-			writer.write(line);
+			writer.write(string);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void newLine(BufferedWriter writer) {
+		try {
 			writer.newLine();
 		} catch (IOException e) {
 			e.printStackTrace();
