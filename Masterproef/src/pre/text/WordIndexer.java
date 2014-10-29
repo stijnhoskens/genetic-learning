@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import pre.models.FullDataSet;
+import datasets.FullDataSet;
 import pre.models.ExplicitInstance;
 import pre.models.IndexFrequencyPair;
 import pre.models.TextInstance;

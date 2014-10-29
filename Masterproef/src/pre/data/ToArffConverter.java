@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+import datasets.DataSet;
+import datasets.FullDataSet;
 import pre.models.IndexFrequencyPair;
 import pre.models.TextInstance;
 import pre.models.Vocabulary;
@@ -39,7 +41,7 @@ public class ToArffConverter {
 				topicsString += topic + ",";
 			topicsString = topicsString.substring(0, topicsString.length() - 1)
 					.concat("}");
-			IO.writeLine(w, ATTRIBUTE_TAG + " topic " + topicsString);
+			IO.writeLine(w, ATTRIBUTE_TAG + " TOPIC " + topicsString);
 			IO.newLine(w);
 			IO.writeLine(w, DATA_TAG);
 			Stream<TextInstance> instances = TextInstanceLoader.load(in);
@@ -53,5 +55,12 @@ public class ToArffConverter {
 			});
 			instances.close();
 		});
+	}
+
+	public static void main(String[] args) {
+		FullDataSet full = FullDataSet.TWENTY_NG;
+		DataSet data = full.evoTest();
+		convert(data.testExplicit(), data.test(), Vocabulary.load(full),
+				TopicsCollector.load(full));
 	}
 }

@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import datasets.FullDataSet;
+
 public class Vocabulary extends AbstractVocabulary<String> {
 
 	private Vocabulary(Collection<String> words,

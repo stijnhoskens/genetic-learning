@@ -10,8 +10,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import datasets.FullDataSet;
 import pre.data.ExplicitDataSorter;
-import pre.models.FullDataSet;
 import pre.models.ExplicitInstance;
 import pre.models.Vocabulary;
 import pre.models.WordFrequencyPair;

@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import pre.models.FullDataSet;
+import datasets.FullDataSet;
 import pre.text.SentenceProcessing;
 
 public class CoraParser implements DataSetParser {

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import pre.models.FullDataSet;
+import datasets.FullDataSet;
 import pre.text.SentenceProcessing;
 
 public class MoviesParser implements DataSetParser {

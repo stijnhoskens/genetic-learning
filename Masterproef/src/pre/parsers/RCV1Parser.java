@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import pre.models.FullDataSet;
+import datasets.FullDataSet;
 import pre.text.SentenceProcessing;
 
 public class RCV1Parser implements DataSetParser {

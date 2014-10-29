@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import pre.models.FullDataSet;
+import datasets.FullDataSet;
 
 public class DataSplitter {
 
