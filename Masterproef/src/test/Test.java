@@ -1,20 +1,26 @@
 package test;
 
-import datasets.FullDataSet;
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.lazy.KStar;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import datasets.DataSet;
 
 public class Test {
 
 	public static void main(String[] args) throws Exception {
-
-		DataSource src = new DataSource(FullDataSet.TWENTY_NG.evoTest().test()
-				.toString());
-		Instances data = src.getDataSet();
-		if (data.classIndex() == -1)
-			data.setClassIndex(data.numAttributes() - 1);
-		System.out.println(data.firstInstance().toString());
-
+		DataSet data = DataSet.CLASSIC_TRAIN;
+		DataSource src = new DataSource(data.train().toString());
+		Instances train = src.getDataSet();
+		train.setClassIndex(train.numAttributes() - 1);
+		src = new DataSource(data.test().toString());
+		Instances test = src.getDataSet();
+		test.setClassIndex(test.numAttributes() - 1);
+		Classifier clsfr = new KStar();
+		clsfr.buildClassifier(train);
+		Evaluation eval = new Evaluation(train);
+		eval.evaluateModel(clsfr, test);
+		System.out.println(eval.toSummaryString("\nResults\n======\n", false));
 	}
-
 }

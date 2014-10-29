@@ -33,8 +33,13 @@ public class ToArffConverter {
 			String relationName = in.toString();
 			IO.writeLine(w, RELATION_TAG + " " + relationName);
 			IO.newLine(w);
-			for (String word : voc.listOfTerms())
+			for (String word : voc.listOfTerms()) {
+				if (word.contains("'"))
+					word = "'" + word.replaceAll("'", "\\\\'") + "'";
+				if (word.contains("\""))
+					word = "'" + word.replaceAll("\"", "\\\\\"") + "'";
 				IO.writeLine(w, ATTRIBUTE_TAG + " " + word + " NUMERIC");
+			}
 			String topicsString = "{";
 			for (String topic : topics)
 				topicsString += topic + ",";
@@ -69,9 +74,13 @@ public class ToArffConverter {
 	}
 
 	public static void main(String[] args) {
-		FullDataSet.ALL.forEach(full -> {
-			convert(full);
-			System.out.println("conversion of " + full.toString() + " done");
-		});
+		FullDataSet.ALL
+				.forEach(full -> {
+					if (FullDataSet.RCV1.equals(full)) {
+						convert(full);
+						System.out.println("conversion of " + full.toString()
+								+ " done");
+					}
+				});
 	}
 }
