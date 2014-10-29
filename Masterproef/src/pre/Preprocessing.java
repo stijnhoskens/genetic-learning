@@ -2,16 +2,14 @@ package pre;
 
 import java.nio.file.Path;
 
-import datasets.DataSet;
-import datasets.FullDataSet;
 import pre.data.DataSplitter;
 import pre.data.ToArffConverter;
-import pre.data.TopicsCollector;
 import pre.models.Vocabulary;
 import pre.parsers.CoraParser;
 import pre.parsers.DataSetParser;
 import pre.text.VocabularyFilter;
 import pre.text.WordIndexer;
+import datasets.FullDataSet;
 
 public class Preprocessing {
 
@@ -37,12 +35,7 @@ public class Preprocessing {
 		System.out.println("indexing done");
 		DataSplitter.splitIntoEvoTrainTest(data, 0.5d);
 		System.out.println("splitting into evolution-specific split done");
-		DataSet evoTest = data.evoTest();
-		ToArffConverter.convert(evoTest.testExplicit(), evoTest.test(),
-				Vocabulary.load(data), TopicsCollector.load(data));
-		DataSet evoTrain = data.evoTrain();
-		ToArffConverter.convert(evoTrain.testExplicit(), evoTrain.test(),
-				Vocabulary.load(data), TopicsCollector.load(data));
+		ToArffConverter.convert(data);
 		System.out.println("conversion to ARFF done");
 		System.out.println("preprocessing done");
 

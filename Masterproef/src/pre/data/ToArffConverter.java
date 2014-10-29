@@ -6,11 +6,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import datasets.DataSet;
-import datasets.FullDataSet;
 import pre.models.IndexFrequencyPair;
 import pre.models.TextInstance;
 import pre.models.Vocabulary;
+import datasets.FullDataSet;
 
 public class ToArffConverter {
 
@@ -57,10 +56,22 @@ public class ToArffConverter {
 		});
 	}
 
+	public static void convert(FullDataSet full) {
+		Vocabulary voc = Vocabulary.load(full);
+		List<String> topics = TopicsCollector.load(full);
+		Stream.of(full.evoTest(), full.evoTrain()).forEach(
+				data -> {
+					ToArffConverter.convert(data.testExplicit(), data.test(),
+							voc, topics);
+					ToArffConverter.convert(data.trainExplicit(), data.train(),
+							voc, topics);
+				});
+	}
+
 	public static void main(String[] args) {
-		FullDataSet full = FullDataSet.TWENTY_NG;
-		DataSet data = full.evoTest();
-		convert(data.testExplicit(), data.test(), Vocabulary.load(full),
-				TopicsCollector.load(full));
+		FullDataSet.ALL.forEach(full -> {
+			convert(full);
+			System.out.println("conversion of " + full.toString() + " done");
+		});
 	}
 }
