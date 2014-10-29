@@ -72,9 +72,7 @@ public class GeneticAlgorithm {
 	 *         with size popSize
 	 */
 	protected List<Individual> select() {
-		List<Individual> list = new ArrayList<>();
 		// TODO Auto-generated method stub
-		assert list.size() == popSize;
 		return null;
 	}
 
@@ -86,7 +84,6 @@ public class GeneticAlgorithm {
 	 */
 	protected void crossover(List<Individual> selected) {
 		// TODO Auto-generated method stub
-		assert selected.size() == popSize;
 	}
 
 	/**
@@ -94,7 +91,6 @@ public class GeneticAlgorithm {
 	 */
 	protected void mutate(List<Individual> selected) {
 		// TODO Auto-generated method stub
-		assert selected.size() == popSize;
 	}
 
 	public double getMutationProbability() {
