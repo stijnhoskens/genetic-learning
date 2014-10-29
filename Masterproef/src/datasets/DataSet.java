@@ -28,15 +28,20 @@ public class DataSet extends AbstractDataSet {
 
 	private static final String TEST = "test.arff";
 	private static final String TRAIN = "train.arff";
+	private static final String STATS = "stats.txt";
 	private static final String TEST_EXPLICIT = "test_explicit.txt";
 	private static final String TRAIN_EXPLICIT = "train_explicit.txt";
 
-	public DataSet(String directory) {
+	private final FullDataSet full;
+
+	public DataSet(String directory, FullDataSet full) {
 		super(directory);
+		this.full = full;
 	}
 
-	public DataSet(Path directory) {
+	public DataSet(Path directory, FullDataSet full) {
 		super(directory);
+		this.full = full;
 	}
 
 	@Override
@@ -47,6 +52,14 @@ public class DataSet extends AbstractDataSet {
 	@Override
 	public Path train() {
 		return Paths.get(directory, TRAIN);
+	}
+
+	public Path stats() {
+		return Paths.get(directory, STATS);
+	}
+
+	public FullDataSet fullDataSet() {
+		return full;
 	}
 
 	public Path testExplicit() {

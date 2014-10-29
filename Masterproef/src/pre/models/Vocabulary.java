@@ -51,6 +51,10 @@ public class Vocabulary extends AbstractVocabulary<String> {
 		return new Vocabulary(IO.allLines(path), naturalOrder(), true);
 	}
 
+	public static int sizeWithoutLoading(FullDataSet data) {
+		return (int) IO.lines(data.voc()).count();
+	}
+
 	private static Stream<WordFrequencyPair> wordFreqPairsOf(FullDataSet data) {
 		return Stream.of(data.trainExplicit(), data.testExplicit())
 				.flatMap(p -> IO.lines(p))

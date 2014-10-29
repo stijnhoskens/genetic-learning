@@ -33,14 +33,14 @@ public class FullDataSet extends AbstractDataSet {
 
 	public FullDataSet(String directory) {
 		super(directory);
-		EVO_TEST = new DataSet(Paths.get(directory, "evoTest"));
-		EVO_TRAIN = new DataSet(Paths.get(directory, "evoTrain"));
+		EVO_TEST = new DataSet(Paths.get(directory, "evoTest"), this);
+		EVO_TRAIN = new DataSet(Paths.get(directory, "evoTrain"), this);
 	}
 
 	public FullDataSet(Path directory) {
 		super(directory);
-		EVO_TEST = new DataSet(directory.resolve("evoTest"));
-		EVO_TRAIN = new DataSet(directory.resolve("evoTrain"));
+		EVO_TEST = new DataSet(directory.resolve("evoTest"), this);
+		EVO_TRAIN = new DataSet(directory.resolve("evoTrain"), this);
 	}
 
 	public DataSet evoTest() {
