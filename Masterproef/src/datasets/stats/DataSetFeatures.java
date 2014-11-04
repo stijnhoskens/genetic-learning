@@ -3,91 +3,98 @@ package datasets.stats;
 import io.IO;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import datasets.DataSet;
 
 public class DataSetFeatures {
 
-	private int nbOfDocs;
-	private int nbOfWords;
-	private int nbOfTopics;
-	private int maxDocsPerTopic;
-	private int minDocsPerTopic;
+	/*
+	 * GENERAL FEATURES
+	 */
+	int nbOfDocs;
+	int vocSize;
+	int nbOfTopics;
 
-	private double skewness;
-	private double entropy;
-	private double variance;
+	/*
+	 * DOCS-PER-TOPIC SPECIFIC
+	 */
+	int dptMax;
+	int dptMin;
+	double dptVar;
+	double dptSkew;
 
-	DataSetFeatures() {
-
-	}
+	/*
+	 * WORDS-PER-DOC SPECIFIC
+	 */
+	int wpdMax;
+	int wpdMin;
+	double wpdAvg;
+	double wpdVar;
+	double wpdSkew;
 
 	public int getNbOfDocs() {
 		return nbOfDocs;
 	}
 
-	void setNbOfDocs(int nbOfDocs) {
-		this.nbOfDocs = nbOfDocs;
-	}
-
-	public int getNbOfWords() {
-		return nbOfWords;
-	}
-
-	void setNbOfWords(int nbOfWords) {
-		this.nbOfWords = nbOfWords;
+	public int getVocSize() {
+		return vocSize;
 	}
 
 	public int getNbOfTopics() {
 		return nbOfTopics;
 	}
 
-	void setNbOfTopics(int nbOfTopics) {
-		this.nbOfTopics = nbOfTopics;
+	public int getDPTMax() {
+		return dptMax;
 	}
 
-	public int getMaxDocsPerTopic() {
-		return maxDocsPerTopic;
+	public double getDPTSkew() {
+		return dptSkew;
 	}
 
-	void setMaxDocsPerTopic(int maxDocsPerTopic) {
-		this.maxDocsPerTopic = maxDocsPerTopic;
+	public int getDPTMin() {
+		return dptMin;
 	}
 
-	public int getMinDocsPerTopic() {
-		return minDocsPerTopic;
+	public double getDPTVar() {
+		return dptVar;
 	}
 
-	void setMinDocsPerTopic(int minDocsPerTopic) {
-		this.minDocsPerTopic = minDocsPerTopic;
+	public int getWPDMax() {
+		return wpdMax;
 	}
 
-	public double getSkewness() {
-		return skewness;
+	public int getWPDMin() {
+		return wpdMin;
 	}
 
-	void setSkewness(double skewness) {
-		this.skewness = skewness;
+	public double getWPDAvg() {
+		return wpdAvg;
 	}
 
-	public double getEntropy() {
-		return entropy;
+	public double getWPDVar() {
+		return wpdVar;
 	}
 
-	void setEntropy(double entropy) {
-		this.entropy = entropy;
+	public double getWPDSkew() {
+		return wpdSkew;
 	}
 
-	public double getVariance() {
-		return variance;
-	}
-
-	void setVariance(double variance) {
-		this.variance = variance;
+	public double[] asArray() {
+		return fields().mapToDouble(f -> {
+			try {
+				return f.getDouble(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return -1;
+			}
+		}).toArray();
 	}
 
 	public static DataSetFeatures load(DataSet data) {
@@ -100,15 +107,32 @@ public class DataSetFeatures {
 				String methodName = "set" + first + splitted[0].substring(1);
 				Method method = DataSetFeatures.class.getDeclaredMethod(
 						methodName, getClass(splitted[2]));
-				if (getClass(splitted[2]).equals(int.class))
+				if (splitted[2].equals("int"))
 					method.invoke(stats, Integer.parseInt(splitted[1]));
-				else if (getClass(splitted[2]).equals(double.class))
+				else if (splitted[2].equals("double"))
 					method.invoke(stats, Double.parseDouble(splitted[1]));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return stats;
+	}
+
+	public void export(DataSet data) throws IOException {
+		Path path = data.stats();
+		if (!Files.exists(path))
+			Files.createFile(path);
+		IO.write(
+				path,
+				w -> fields().forEach(
+						f -> {
+							try {
+								IO.writeLine(w, f.getName() + " " + f.get(this)
+										+ " " + f.getType());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}));
 	}
 
 	private static Class<?> getClass(String prim) {
@@ -122,23 +146,12 @@ public class DataSetFeatures {
 		}
 	}
 
-	public void export(DataSet data) throws IOException {
-		Path path = data.stats();
-		if (!Files.exists(path))
-			Files.createFile(path);
-		IO.write(
-				path,
-				w -> Arrays.stream(this.getClass().getDeclaredFields())
-						.forEach(
-								f -> {
-									try {
-										IO.writeLine(w,
-												f.getName() + " " + f.get(this)
-														+ " " + f.getType());
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-								}));
+	private Stream<Field> fields() {
+		return Arrays.stream(getClass().getDeclaredFields());
+	}
+
+	public static void main(String[] args) throws IOException {
+		new DataSetFeatures().export(DataSet.CLASSIC_TRAIN);
 	}
 
 }

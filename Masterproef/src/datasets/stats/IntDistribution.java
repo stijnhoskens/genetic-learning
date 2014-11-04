@@ -1,0 +1,62 @@
+package datasets.stats;
+
+import java.util.Arrays;
+import java.util.IntSummaryStatistics;
+import java.util.stream.IntStream;
+
+public class IntDistribution {
+
+	private final int[] distribution;
+
+	public IntDistribution(int[] distribution) {
+		this.distribution = Arrays.copyOf(distribution, distribution.length);
+	}
+
+	public IntStream asStream() {
+		return Arrays.stream(distribution);
+	}
+
+	public IntSummaryStatistics frequencyStats() {
+		return asStream().summaryStatistics();
+	}
+
+	public double variance() {
+		return momentAboutMean(2);
+	}
+
+	public double standardDeviation() {
+		return Math.sqrt(momentAboutMean(2, true));
+	}
+
+	public double skewness() {
+		return standardizedMean(3) / Math.pow(standardDeviation(), 3);
+	}
+
+	private double momentAboutMean(int k) {
+		return momentAboutMean(k, false);
+	}
+
+	private double momentAboutMean(int k, boolean shouldCorrect) {
+		double avg = frequencyStats().getAverage();
+		double length = shouldCorrect ? (double) distribution.length - 1
+				: (double) distribution.length;
+		double sum = asStream().mapToDouble(x -> ((double) x) - avg)
+				.map(x -> Math.pow(x, (double) k)).sum();
+		return sum / length;
+	}
+
+	private double standardizedMean(int k) {
+		return momentAboutMean(k) / Math.pow(standardDeviation(), k);
+	}
+
+	@Override
+	public String toString() {
+		return Arrays.toString(distribution);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(new IntDistribution(new int[] { 1, 2, 6, 0, 4, 5, 6,
+				1, 8, 9, 5 }).skewness());
+	}
+
+}
