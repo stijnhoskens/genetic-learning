@@ -2,8 +2,16 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/liblinear-1.92.jar"/>
-	<classpathentry kind="lib" path="lib/LibLINEAR.jar"/>
-	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="lib" path="lib/LibLINEAR/liblinear-1.92.jar"/>
+	<classpathentry kind="lib" path="lib/LibLINEAR/LibLINEAR.jar" sourcepath="lib/LibLINEAR/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/User/git/Masterproef/Masterproef/lib/LibLINEAR/doc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/weka/weka.jar" sourcepath="lib/weka/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/User/git/Masterproef/Masterproef/lib/weka/doc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

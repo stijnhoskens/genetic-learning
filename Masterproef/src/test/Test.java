@@ -1,6 +1,6 @@
 package test;
 
-import weka.classifiers.Classifier;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LibLINEAR;
 import weka.core.Instances;
@@ -17,7 +17,8 @@ public class Test {
 		src = new DataSource(data.test().toString());
 		Instances test = src.getDataSet();
 		test.setClassIndex(test.numAttributes() - 1);
-		Classifier clsfr = new LibLINEAR();		
+		AbstractClassifier clsfr = new LibLINEAR();
+		clsfr.setOptions(new String[]{"-S", "7"});
 		clsfr.buildClassifier(train);
 		Evaluation eval = new Evaluation(train);
 		eval.evaluateModel(clsfr, test);
