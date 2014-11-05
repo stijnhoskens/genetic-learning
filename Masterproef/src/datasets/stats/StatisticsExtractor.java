@@ -62,13 +62,10 @@ public class StatisticsExtractor {
 	private static IntDistribution getDocDistribution(Path path)
 			throws Exception {
 		Instances instances = new DataSource(path.toString()).getDataSet();
-		int[] array = new int[instances.numInstances()];
-		for (int i = 0; i < instances.numInstances(); i++) {
-			double[] doubleArray = instances.instance(i).toDoubleArray();
-			array[i] = (int) Arrays.stream(doubleArray, 0,
-					doubleArray.length - 1).sum();
-		}
-		return new IntDistribution(array);
+		return new IntDistribution(instances.stream().mapToInt(i -> {
+			double[] doubles = i.toDoubleArray();
+			return (int) Arrays.stream(doubles, 0, doubles.length - 1).sum();
+		}).toArray());
 	}
 
 	public static void main(String[] args) throws Exception {

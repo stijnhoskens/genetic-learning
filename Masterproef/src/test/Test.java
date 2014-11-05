@@ -1,5 +1,7 @@
 package test;
 
+import java.util.stream.Stream;
+
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LibLINEAR;
@@ -18,10 +20,18 @@ public class Test {
 		Instances test = src.getDataSet();
 		test.setClassIndex(test.numAttributes() - 1);
 		AbstractClassifier clsfr = new LibLINEAR();
-		clsfr.setOptions(new String[]{"-S", "7"});
-		clsfr.buildClassifier(train);
-		Evaluation eval = new Evaluation(train);
-		eval.evaluateModel(clsfr, test);
-		System.out.println(eval.toSummaryString("\nResults\n======\n", false));
+		Stream.of("0.0001", "0.001", "0.01", "0.1", "1", "10", "100", "1000")
+				.forEach(s -> {
+					try {
+						clsfr.setOptions(new String[] { "-C", s });
+						clsfr.buildClassifier(train);
+						Evaluation eval = new Evaluation(train);
+						eval.evaluateModel(clsfr, test);
+						System.out.println(s);
+						System.out.println(eval.pctCorrect());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 	}
 }
