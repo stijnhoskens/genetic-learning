@@ -1,52 +1,56 @@
 package genetic;
 
+import genetic.crossover.CrossoverStrategy;
+import genetic.mutation.MutationStrategy;
+import genetic.selection.SelectionStrategy;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public class GeneticAlgorithm {
+import util.Pair;
+
+public class GeneticAlgorithm<T extends Individual> {
 
 	/*
 	 * These fields remain invariant during the full life cycle of an instance
 	 * of GeneticAlgorithm
 	 */
-	private final Supplier<Population> init;
 	private final double mProb;
 	private final double coProb;
 	private final int popSize;
 
 	/*
+	 * Fields used for the actual operators
+	 */
+	private Supplier<Population<T>> init;
+	private SelectionStrategy<T> selection;
+	private MutationStrategy<T> mutation;
+	private CrossoverStrategy<T> crossover;
+
+	/*
 	 * These fields will change after every iteration of the algorithm itself
 	 */
-	private Population population;
+	private Population<T> population;
 	private int nbOfIterations;
 	private long startTime;
 	private double[] progress;
 
-	private GeneticAlgorithm(Supplier<Population> init,
-			double mutationProbability, double crossoverProbability,
-			int populationSize) {
-		this.init = init;
-		mProb = mutationProbability;
-		coProb = crossoverProbability;
-		popSize = populationSize;
-	}
-
-	public GeneticAlgorithm(Supplier<Population> init,
-			double mutationProbability, double crossoverProbability) {
-		this(init, mutationProbability, crossoverProbability, 0);
-	}
+	private final Random r = new Random();
 
 	public GeneticAlgorithm(double mutationP, double crossoverP,
 			int populationSize) {
-		this(null, mutationP, crossoverP, populationSize);
+		mProb = mutationP;
+		coProb = crossoverP;
+		popSize = populationSize;
 	}
 
 	public Individual apply(BooleanSupplier termination) {
 		initialize();
 		while (!termination.getAsBoolean()) {
-			List<Individual> selected = select();
+			List<T> selected = select();
 			crossover(selected);
 			mutate(selected);
 			population.replaceWith(selected);
@@ -55,7 +59,7 @@ public class GeneticAlgorithm {
 		return population.bestIndividual();
 	}
 
-	protected Population initializePopulation() {
+	protected Population<T> initializePopulation() {
 		if (init != null)
 			return init.get();
 		else
@@ -70,9 +74,8 @@ public class GeneticAlgorithm {
 	 * @return a list (containing a subset of the population) of individuals
 	 *         with size popSize
 	 */
-	protected List<Individual> select() {
-		// TODO Auto-generated method stub
-		return null;
+	protected List<T> select() {
+		return selection.selectionOf(population);
 	}
 
 	/**
@@ -80,16 +83,30 @@ public class GeneticAlgorithm {
 	 * children appear. This crossover will occur with a chance of coProb. This
 	 * basically means a coProb of 0% returns an exact replica of the parents,
 	 * while a coProb of 100% returns an all new set of children.
+	 * 
+	 * @note for correctness it is preferred to have an even population size.
 	 */
-	protected void crossover(List<Individual> selected) {
-		// TODO Auto-generated method stub
+	protected void crossover(List<T> selected) {
+		for (int i = 0; i < selected.size() / 2; i++)
+			if (r.nextDouble() < coProb) {
+				int j = 2 * i;
+				int k = 2 * i + 1;
+				Pair<T, T> pair = crossover.childrenOf(new Pair<>(selected
+						.get(j), selected.get(k)));
+				selected.remove(j);
+				selected.remove(k);
+				selected.addAll(j, Pair.asList(pair));
+			}
 	}
 
 	/**
 	 * Mutates some individuals in the list (with a chance of mProb).
 	 */
-	protected void mutate(List<Individual> selected) {
-		// TODO Auto-generated method stub
+	protected void mutate(List<T> selected) {
+		selected.forEach(i -> {
+			if (r.nextDouble() < mProb)
+				mutation.mutate(i);
+		});
 	}
 
 	public double getMutationProbability() {

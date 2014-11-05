@@ -1,6 +1,6 @@
 package genetic;
 
-public class Individual {
+public abstract class Individual {
 
 	private final double fitness;
 
@@ -16,8 +16,6 @@ public class Individual {
 	 * This method is used to calculate the fitness of a certain individual only
 	 * once.
 	 */
-	private double calculateFitness() {
-		return 0; // TODO
-	}
+	protected abstract double calculateFitness();
 
 }
