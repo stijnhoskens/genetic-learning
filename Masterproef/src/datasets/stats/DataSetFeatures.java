@@ -4,7 +4,6 @@ import io.IO;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -13,6 +12,8 @@ import java.util.stream.Stream;
 import datasets.DataSet;
 
 public class DataSetFeatures {
+
+	private final DataSet data;
 
 	/*
 	 * GENERAL FEATURES
@@ -26,17 +27,31 @@ public class DataSetFeatures {
 	 */
 	int dptMax;
 	int dptMin;
+	double dptMinMax;
 	double dptVar;
+	double dptStd;
 	double dptSkew;
+	double dptEntr;
 
 	/*
 	 * WORDS-PER-DOC SPECIFIC
 	 */
 	int wpdMax;
 	int wpdMin;
+	double wpdMinMax;
 	double wpdAvg;
 	double wpdVar;
+	double wpdStd;
 	double wpdSkew;
+	double wpdEntr;
+
+	public DataSetFeatures(DataSet data) {
+		this.data = data;
+	}
+
+	public DataSet getDataSet() {
+		return data;
+	}
 
 	public int getNbOfDocs() {
 		return nbOfDocs;
@@ -62,8 +77,16 @@ public class DataSetFeatures {
 		return dptMin;
 	}
 
+	public double getDPTMinMax() {
+		return dptMinMax;
+	}
+
 	public double getDPTVar() {
 		return dptVar;
+	}
+
+	public double getDPTEntr() {
+		return dptEntr;
 	}
 
 	public int getWPDMax() {
@@ -72,6 +95,10 @@ public class DataSetFeatures {
 
 	public int getWPDMin() {
 		return wpdMin;
+	}
+
+	public double getWPDMinMax() {
+		return wpdMinMax;
 	}
 
 	public double getWPDAvg() {
@@ -86,6 +113,10 @@ public class DataSetFeatures {
 		return wpdSkew;
 	}
 
+	public double getWPDEntr() {
+		return wpdEntr;
+	}
+
 	public double[] asArray() {
 		return fields().mapToDouble(f -> {
 			try {
@@ -98,19 +129,16 @@ public class DataSetFeatures {
 	}
 
 	public static DataSetFeatures load(DataSet data) {
-		DataSetFeatures stats = new DataSetFeatures();
+		DataSetFeatures stats = new DataSetFeatures(data);
 		for (String l : IO.allLines(data.stats())) {
 			try {
 				String[] splitted = l.split(" ");
 				String fieldName = splitted[0];
-				char first = Character.toUpperCase(fieldName.charAt(0));
-				String methodName = "set" + first + splitted[0].substring(1);
-				Method method = DataSetFeatures.class.getDeclaredMethod(
-						methodName, getClass(splitted[2]));
+				Field field = DataSetFeatures.class.getDeclaredField(fieldName);
 				if (splitted[2].equals("int"))
-					method.invoke(stats, Integer.parseInt(splitted[1]));
+					field.set(stats, Integer.parseInt(splitted[1]));
 				else if (splitted[2].equals("double"))
-					method.invoke(stats, Double.parseDouble(splitted[1]));
+					field.set(stats, Double.parseDouble(splitted[1]));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -118,7 +146,7 @@ public class DataSetFeatures {
 		return stats;
 	}
 
-	public void export(DataSet data) throws IOException {
+	public void export() throws IOException {
 		Path path = data.stats();
 		if (!Files.exists(path))
 			Files.createFile(path);
@@ -127,31 +155,35 @@ public class DataSetFeatures {
 				w -> fields().forEach(
 						f -> {
 							try {
-								IO.writeLine(w, f.getName() + " " + f.get(this)
-										+ " " + f.getType());
+								if (!f.getName().equals("data"))
+									IO.writeLine(w,
+											f.getName() + " " + f.get(this)
+													+ " " + f.getType());
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}));
 	}
 
-	private static Class<?> getClass(String prim) {
-		switch (prim) {
-		case "int":
-			return int.class;
-		case "double":
-			return double.class;
-		default:
-			return Object.class;
-		}
-	}
-
 	private Stream<Field> fields() {
 		return Arrays.stream(getClass().getDeclaredFields());
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		fields().forEach(f -> {
+			try {
+				builder.append(f.getName() + " " + f.get(this) + "; ");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		return builder.toString();
+	}
+
 	public static void main(String[] args) throws IOException {
-		new DataSetFeatures().export(DataSet.CLASSIC_TRAIN);
+		System.out.println(load(DataSet.CLASSIC_TRAIN));
 	}
 
 }

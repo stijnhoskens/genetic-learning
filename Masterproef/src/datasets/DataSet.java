@@ -2,6 +2,7 @@ package datasets;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public class DataSet extends AbstractDataSet {
 
@@ -25,6 +26,9 @@ public class DataSet extends AbstractDataSet {
 	public static final DataSet WEBKB_TEST = FullDataSet.WEBKB.evoTest();
 	public static final DataSet WIPO_TRAIN = FullDataSet.WIPO.evoTrain();
 	public static final DataSet WIPO_TEST = FullDataSet.WIPO.evoTest();
+
+	public static final Stream<DataSet> ALL = FullDataSet.ALL
+			.flatMap(fds -> Stream.of(fds.evoTrain(), fds.evoTest()));
 
 	private static final String TEST = "test.arff";
 	private static final String TRAIN = "train.arff";

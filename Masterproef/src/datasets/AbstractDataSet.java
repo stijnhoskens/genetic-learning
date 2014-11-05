@@ -25,7 +25,7 @@ public abstract class AbstractDataSet {
 
 	@Override
 	public String toString() {
-		return directory().getFileName().toString();
+		return directory().toString();
 	}
 
 }

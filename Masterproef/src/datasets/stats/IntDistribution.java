@@ -2,6 +2,8 @@ package datasets.stats;
 
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class IntDistribution {
@@ -32,6 +34,20 @@ public class IntDistribution {
 		return standardizedMean(3) / Math.pow(standardDeviation(), 3);
 	}
 
+	public double entropy() {
+		Map<Integer, Integer> map = new LinkedHashMap<>();
+		asStream().forEach(key -> {
+			int value = map.containsKey(key) ? map.get(key) : 0;
+			map.put(key, value + 1);
+		});
+		double result = 0.0;
+		for (int key : map.keySet()) {
+			double frequency = (double) map.get(key) / distribution.length;
+			result -= frequency * (Math.log(frequency) / Math.log(2));
+		}
+		return result;
+	}
+
 	private double momentAboutMean(int k) {
 		return momentAboutMean(k, false);
 	}
@@ -52,11 +68,6 @@ public class IntDistribution {
 	@Override
 	public String toString() {
 		return Arrays.toString(distribution);
-	}
-
-	public static void main(String[] args) {
-		System.out.println(new IntDistribution(new int[] { 1, 2, 6, 0, 4, 5, 6,
-				1, 8, 9, 5 }).skewness());
 	}
 
 }
