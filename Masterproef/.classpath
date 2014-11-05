@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/weka-src"/>
+	<classpathentry kind="lib" path="lib/liblinear-1.92.jar"/>
+	<classpathentry kind="lib" path="lib/LibLINEAR.jar"/>
+	<classpathentry kind="lib" path="lib/weka.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

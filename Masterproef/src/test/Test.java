@@ -2,7 +2,7 @@ package test;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.lazy.KStar;
+import weka.classifiers.functions.LibLINEAR;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
@@ -17,7 +17,7 @@ public class Test {
 		src = new DataSource(data.test().toString());
 		Instances test = src.getDataSet();
 		test.setClassIndex(test.numAttributes() - 1);
-		Classifier clsfr = new KStar();
+		Classifier clsfr = new LibLINEAR();		
 		clsfr.buildClassifier(train);
 		Evaluation eval = new Evaluation(train);
 		eval.evaluateModel(clsfr, test);
