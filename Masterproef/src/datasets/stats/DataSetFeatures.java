@@ -117,15 +117,26 @@ public class DataSetFeatures {
 		return wpdEntr;
 	}
 
+	private double[] array;
+
 	public double[] asArray() {
-		return fields().mapToDouble(f -> {
-			try {
-				return f.getDouble(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return -1;
-			}
-		}).toArray();
+		if (array == null)
+			array = fields().filter(f -> {
+				try {
+					f.getDouble(this);
+					return true;
+				} catch (Exception e) {
+					return false;
+				}
+			}).mapToDouble(f -> {
+				try {
+					return f.getDouble(this);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return -1;
+				}
+			}).toArray();
+		return array;
 	}
 
 	public static DataSetFeatures load(DataSet data) {
@@ -183,7 +194,8 @@ public class DataSetFeatures {
 	}
 
 	public static void main(String[] args) throws IOException {
-		System.out.println(load(DataSet.CLASSIC_TRAIN));
+		System.out.println(Arrays.toString(load(DataSet.CLASSIC_TRAIN)
+				.asArray()));
 	}
 
 }

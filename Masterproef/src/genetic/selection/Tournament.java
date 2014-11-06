@@ -2,8 +2,8 @@ package genetic.selection;
 
 import java.util.Random;
 
-import genetic.Individual;
 import genetic.Population;
+import genetic.individuals.Individual;
 
 public class Tournament<T extends Individual> {
 

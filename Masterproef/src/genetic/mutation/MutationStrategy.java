@@ -1,6 +1,6 @@
 package genetic.mutation;
 
-import genetic.Individual;
+import genetic.individuals.Individual;
 
 @FunctionalInterface
 public interface MutationStrategy<T extends Individual> {

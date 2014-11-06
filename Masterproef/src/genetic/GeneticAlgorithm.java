@@ -1,6 +1,7 @@
 package genetic;
 
 import genetic.crossover.CrossoverStrategy;
+import genetic.individuals.Individual;
 import genetic.init.PopulationGenerator;
 import genetic.mutation.MutationStrategy;
 import genetic.selection.SelectionStrategy;

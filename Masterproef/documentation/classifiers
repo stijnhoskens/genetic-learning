@@ -1,0 +1,5 @@
+SVM -S [0..7] -C [0.01..100] # type of classifier and c-value
+NaiveBayes
+kNN -K [1..10] -I? # amount of neighbours or weight by inverse of distance?
+DT
+AdaBoost?

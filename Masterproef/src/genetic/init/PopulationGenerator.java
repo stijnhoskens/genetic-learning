@@ -1,7 +1,7 @@
 package genetic.init;
 
-import genetic.Individual;
 import genetic.Population;
+import genetic.individuals.Individual;
 
 @FunctionalInterface
 public interface PopulationGenerator<T extends Individual> {
