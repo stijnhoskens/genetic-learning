@@ -1,14 +1,15 @@
 package genetic;
 
 import genetic.crossover.CrossoverStrategy;
+import genetic.init.PopulationGenerator;
 import genetic.mutation.MutationStrategy;
 import genetic.selection.SelectionStrategy;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 import util.Pair;
 
@@ -25,7 +26,7 @@ public class GeneticAlgorithm<T extends Individual> {
 	/*
 	 * Fields used for the actual operators
 	 */
-	private Supplier<Population<T>> init;
+	private PopulationGenerator<T> init;
 	private SelectionStrategy<T> selection;
 	private MutationStrategy<T> mutation;
 	private CrossoverStrategy<T> crossover;
@@ -36,7 +37,7 @@ public class GeneticAlgorithm<T extends Individual> {
 	private Population<T> population;
 	private int nbOfIterations;
 	private long startTime;
-	private double[] progress;
+	private final List<Individual> progress = new ArrayList<>();
 
 	private final Random r = new Random();
 
@@ -60,10 +61,7 @@ public class GeneticAlgorithm<T extends Individual> {
 	}
 
 	protected Population<T> initializePopulation() {
-		if (init != null)
-			return init.get();
-		else
-			return null; // TODO
+		return init.get(popSize);
 	}
 
 	/**
@@ -103,28 +101,35 @@ public class GeneticAlgorithm<T extends Individual> {
 	 * Mutates some individuals in the list (with a chance of mProb).
 	 */
 	protected void mutate(List<T> selected) {
-		selected.forEach(i -> {
-			if (r.nextDouble() < mProb)
-				mutation.mutate(i);
-		});
+		for (int i = 0; i < selected.size(); i++)
+			if (r.nextDouble() < mProb) {
+				T individual = selected.get(i);
+				T mutated = mutation.mutate(individual);
+				selected.remove(i);
+				selected.add(i, mutated);
+			}
 	}
 
-	public double getMutationProbability() {
-		return mProb;
+	public void setPopulationGenerator(PopulationGenerator<T> supplier) {
+		init = supplier;
 	}
 
-	public double getCrossoverProbability() {
-		return coProb;
+	public void setSelectionStrategy(SelectionStrategy<T> strategy) {
+		selection = strategy;
 	}
 
-	public int getPopulationSize() {
-		return popSize;
+	public void setMutationStrategy(MutationStrategy<T> strategy) {
+		mutation = strategy;
+	}
+
+	public void setCrossoverStrategy(CrossoverStrategy<T> strategy) {
+		crossover = strategy;
 	}
 
 	/**
 	 * Returns the number of iterations the algorithm itself has gone through.
 	 */
-	public int getNbOfIterations() {
+	public synchronized int getNbOfIterations() {
 		return nbOfIterations;
 	}
 
@@ -137,17 +142,15 @@ public class GeneticAlgorithm<T extends Individual> {
 	}
 
 	/**
-	 * Gives a view of the progress given by an array in which every entry gives
-	 * the fitness of the best individual in that iteration. This means there
-	 * are as much entries in this array as there have been iterations.
-	 * 
-	 * @return
+	 * Gives a view of the progress given by a list in which every entry gives
+	 * the fittest individual in that iteration. This means there are as much
+	 * entries in this list as there have been iterations.
 	 */
-	public double[] getProgress() {
-		return Arrays.copyOf(progress, progress.length);
+	public synchronized List<Individual> getProgress() {
+		return Collections.unmodifiableList(progress);
 	}
 
-	private void paperWork() {
+	private synchronized void paperWork() {
 		nbOfIterations++;
 		updateProgress();
 	}
@@ -156,13 +159,10 @@ public class GeneticAlgorithm<T extends Individual> {
 		startTime = System.currentTimeMillis();
 		population = initializePopulation();
 		nbOfIterations = 0;
-		progress = new double[0];
 	}
 
 	private void updateProgress() {
-		double[] newProgress = Arrays.copyOf(progress, progress.length + 1);
-		newProgress[progress.length] = population.bestIndividual().fitness();
-		progress = newProgress;
+		progress.add(population.bestIndividual());
 	}
 
 }

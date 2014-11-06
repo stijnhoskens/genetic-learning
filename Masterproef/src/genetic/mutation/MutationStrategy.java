@@ -2,8 +2,9 @@ package genetic.mutation;
 
 import genetic.Individual;
 
+@FunctionalInterface
 public interface MutationStrategy<T extends Individual> {
 
-	void mutate(T individual);
+	T mutate(T individual);
 
 }

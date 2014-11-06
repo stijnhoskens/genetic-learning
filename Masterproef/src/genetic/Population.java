@@ -34,6 +34,12 @@ public class Population<T extends Individual> {
 		return Collections.unmodifiableList(individuals);
 	}
 
+	public List<T> asSortedList() {
+		List<T> sorted = new ArrayList<>(individuals);
+		sorted.sort(Comparator.comparingDouble(Individual::fitness).reversed());
+		return Collections.unmodifiableList(sorted);
+	}
+
 	public Stream<T> asStream() {
 		return individuals.stream();
 	}

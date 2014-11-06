@@ -6,17 +6,17 @@ import genetic.Population;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.ToDoubleFunction;
 
 public class RouletteWheel<T extends Individual> {
 
 	private final List<Entry<T>> entries = new ArrayList<>();
-	private final Random r;
+	private final Random r = new Random();
 
-	public RouletteWheel(Population<T> population, Random random) {
-		r = random;
+	public RouletteWheel(Population<T> population, ToDoubleFunction<T> ranker) {
 		double accumulator = 0;
 		for (T i : population.asList()) {
-			accumulator += i.fitness();
+			accumulator += ranker.applyAsDouble(i);
 			entries.add(new Entry<>(i, accumulator));
 		}
 		final double totalSum = accumulator;
@@ -24,7 +24,7 @@ public class RouletteWheel<T extends Individual> {
 	}
 
 	public RouletteWheel(Population<T> population) {
-		this(population, new Random());
+		this(population, Individual::fitness);
 	}
 
 	public T spin() {
@@ -35,9 +35,9 @@ public class RouletteWheel<T extends Individual> {
 		return null;
 	}
 
-	public List<T> universalSpin() {
+	public List<T> universalSpin(int n) {
 		List<T> individuals = new ArrayList<>();
-		double spacing = 1d / (double) entries.size();
+		double spacing = 1d / (double) n;
 		double random = r.nextDouble() * spacing;
 		for (Entry<T> e : entries)
 			while (e.accumulatedValueIsGreaterThan(random)) {
