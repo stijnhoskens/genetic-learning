@@ -1,5 +1,6 @@
-package genetic.individuals;
+package genetic.individuals.tree;
 
+import genetic.individuals.Range;
 import datasets.stats.DataSetFeatures;
 
 public class DecisionNode implements DTNode {

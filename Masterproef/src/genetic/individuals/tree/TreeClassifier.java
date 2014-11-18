@@ -1,25 +1,26 @@
-package genetic.individuals;
+package genetic.individuals.tree;
+
+import genetic.individuals.Individual;
 
 import java.util.Set;
 
 import datasets.stats.DataSetFeatures;
 
-public class MetaClassifier implements Individual {
+public class TreeClassifier implements Individual {
 
 	private final Set<DataSetFeatures> datasets;
-	private double fitness = -1;
 	private final DTNode initial;
+	private double fitness = -1;
 
-	public MetaClassifier(Set<DataSetFeatures> datasets, DTNode initialNode) {
+	public TreeClassifier(Set<DataSetFeatures> datasets, DTNode initialNode) {
 		this.datasets = datasets;
 		this.initial = initialNode;
 	}
 
 	@Override
 	public double fitness() {
-		if (fitness >= 0)
-			return fitness;
-		fitness = calculateFitness();
+		if (fitness < 0)
+			fitness = calculateFitness();
 		return fitness;
 	}
 

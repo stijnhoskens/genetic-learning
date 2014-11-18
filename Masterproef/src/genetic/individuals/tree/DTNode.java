@@ -1,4 +1,4 @@
-package genetic.individuals;
+package genetic.individuals.tree;
 
 import datasets.stats.DataSetFeatures;
 
