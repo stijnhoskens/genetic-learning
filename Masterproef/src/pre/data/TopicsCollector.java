@@ -36,10 +36,11 @@ public class TopicsCollector {
 	}
 
 	public static void main(String[] args) {
-		FullDataSet.ALL.forEach(data -> {
-			buildAndExport(data);
-			System.out.println("building topics for " + data.toString()
-					+ " done");
-		});
+		FullDataSet.all().forEach(
+				data -> {
+					buildAndExport(data);
+					System.out.println("building topics for " + data.toString()
+							+ " done");
+				});
 	}
 }

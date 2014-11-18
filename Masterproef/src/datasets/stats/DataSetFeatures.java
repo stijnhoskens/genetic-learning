@@ -18,34 +18,19 @@ public class DataSetFeatures {
 	/*
 	 * GENERAL FEATURES
 	 */
-	int nbOfDocs;
-	int vocSize;
-	int nbOfTopics;
+	int nbOfDocs, nbOfTopics;
 
 	/*
 	 * DOCS-PER-TOPIC SPECIFIC
 	 */
-	int dptMax;
-	int dptMin;
-	double dptMinMax;
-	double dptVar;
-	double dptStd;
-	double dptSkew;
-	double dptEntr;
+	double dptStd, dptEntr;
 
 	/*
 	 * WORDS-PER-DOC SPECIFIC
 	 */
-	int wpdMax;
-	int wpdMin;
-	double wpdMinMax;
-	double wpdAvg;
-	double wpdVar;
-	double wpdStd;
-	double wpdSkew;
-	double wpdEntr;
+	double wpdAvg, wpdStd, wpdEntr;
 
-	public DataSetFeatures(DataSet data) {
+	DataSetFeatures(DataSet data) {
 		this.data = data;
 	}
 
@@ -57,86 +42,38 @@ public class DataSetFeatures {
 		return nbOfDocs;
 	}
 
-	public int getVocSize() {
-		return vocSize;
-	}
-
 	public int getNbOfTopics() {
 		return nbOfTopics;
-	}
-
-	public int getDPTMax() {
-		return dptMax;
-	}
-
-	public double getDPTSkew() {
-		return dptSkew;
-	}
-
-	public int getDPTMin() {
-		return dptMin;
-	}
-
-	public double getDPTMinMax() {
-		return dptMinMax;
-	}
-
-	public double getDPTVar() {
-		return dptVar;
 	}
 
 	public double getDPTEntr() {
 		return dptEntr;
 	}
 
-	public int getWPDMax() {
-		return wpdMax;
-	}
-
-	public int getWPDMin() {
-		return wpdMin;
-	}
-
-	public double getWPDMinMax() {
-		return wpdMinMax;
-	}
-
 	public double getWPDAvg() {
 		return wpdAvg;
-	}
-
-	public double getWPDVar() {
-		return wpdVar;
-	}
-
-	public double getWPDSkew() {
-		return wpdSkew;
 	}
 
 	public double getWPDEntr() {
 		return wpdEntr;
 	}
 
-	private double[] array;
-
 	public double[] asArray() {
-		if (array == null)
-			array = fields().filter(f -> {
-				try {
-					f.getDouble(this);
-					return true;
-				} catch (Exception e) {
-					return false;
-				}
-			}).mapToDouble(f -> {
-				try {
-					return f.getDouble(this);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return -1;
-				}
-			}).toArray();
-		return array;
+		return fields().filter(f -> {
+			try {
+				f.getDouble(this);
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}).mapToDouble(f -> {
+			try {
+				return f.getDouble(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return -1;
+			}
+		}).toArray();
 	}
 
 	public static DataSetFeatures load(DataSet data) {

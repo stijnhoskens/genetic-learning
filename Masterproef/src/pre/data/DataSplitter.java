@@ -48,7 +48,7 @@ public class DataSplitter {
 	}
 
 	public static void main(String[] args) throws IOException {
-		FullDataSet.ALL.forEach(data -> {
+		FullDataSet.all().forEach(data -> {
 			try {
 				DataSplitter.splitIntoEvoTrainTest(data, 0.5d);
 				System.out.println("splitting of " + data + " done");

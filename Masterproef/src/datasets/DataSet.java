@@ -27,9 +27,6 @@ public class DataSet extends AbstractDataSet {
 	public static final DataSet WIPO_TRAIN = FullDataSet.WIPO.evoTrain();
 	public static final DataSet WIPO_TEST = FullDataSet.WIPO.evoTest();
 
-	public static final Stream<DataSet> ALL = FullDataSet.ALL
-			.flatMap(fds -> Stream.of(fds.evoTrain(), fds.evoTest()));
-
 	private static final String TEST = "test.arff";
 	private static final String TRAIN = "train.arff";
 	private static final String STATS = "stats.txt";
@@ -72,6 +69,15 @@ public class DataSet extends AbstractDataSet {
 
 	public Path trainExplicit() {
 		return Paths.get(directory, TRAIN_EXPLICIT);
+	}
+
+	public static Stream<DataSet> trainingSets() {
+		return FullDataSet.all().map(FullDataSet::evoTrain);
+	}
+
+	public static Stream<DataSet> all() {
+		return FullDataSet.all().flatMap(
+				fds -> Stream.of(fds.evoTrain(), fds.evoTest()));
 	}
 
 }

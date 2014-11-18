@@ -6,7 +6,6 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 
 import pre.data.TopicsCollector;
-import pre.models.Vocabulary;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
@@ -17,29 +16,16 @@ public class StatisticsExtractor {
 		DataSetFeatures features = new DataSetFeatures(data);
 		List<String> topics = TopicsCollector.load(data.fullDataSet());
 		features.nbOfTopics = topics.size();
-		features.vocSize = Vocabulary.sizeWithoutLoading(data.fullDataSet());
 		Path train = data.train();
 		IntDistribution topicDistribution = getTopicDistribution(train);
 		IntSummaryStatistics stats = topicDistribution.frequencyStats();
-		features.dptMax = stats.getMax();
-		features.dptMin = stats.getMin();
-		features.dptMinMax = (double) features.dptMin
-				/ (double) features.dptMax;
 		features.nbOfDocs = (int) stats.getSum();
-		features.dptVar = topicDistribution.variance();
-		features.dptStd = Math.sqrt(features.dptVar);
-		features.dptSkew = topicDistribution.skewness();
+		features.dptStd = topicDistribution.standardDeviation();
 		features.dptEntr = topicDistribution.entropy();
 		IntDistribution docDistribution = getDocDistribution(train);
 		stats = docDistribution.frequencyStats();
 		features.wpdAvg = stats.getAverage();
-		features.wpdMax = stats.getMax();
-		features.wpdMin = stats.getMin();
-		features.wpdMinMax = (double) features.wpdMin
-				/ (double) features.wpdMax;
-		features.wpdVar = docDistribution.variance();
-		features.wpdStd = Math.sqrt(features.wpdVar);
-		features.wpdSkew = docDistribution.skewness();
+		features.wpdStd = docDistribution.standardDeviation();
 		features.wpdEntr = docDistribution.entropy();
 		return features;
 	}
@@ -69,14 +55,18 @@ public class StatisticsExtractor {
 	}
 
 	public static void main(String[] args) throws Exception {
-		DataSet.ALL.forEach(data -> {
-			try {
-				extract(data).export();
-				System.out.print(data);
-				System.out.println(" exported.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+		DataSet.all().forEach(
+				data -> {
+					try {
+						if (data.equals(DataSet.DMOZ_TEST)
+								|| data.equals(DataSet.DMOZ_TRAIN))
+							return;
+						extract(data).export();
+						System.out.print(data);
+						System.out.println(" exported.");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 	}
 }

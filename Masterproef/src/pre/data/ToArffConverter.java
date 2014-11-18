@@ -74,8 +74,8 @@ public class ToArffConverter {
 	}
 
 	public static void main(String[] args) {
-		FullDataSet.ALL
-				.forEach(full -> {
+		FullDataSet.all().forEach(
+				full -> {
 					if (FullDataSet.RCV1.equals(full)) {
 						convert(full);
 						System.out.println("conversion of " + full.toString()

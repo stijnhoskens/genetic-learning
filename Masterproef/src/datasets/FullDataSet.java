@@ -25,9 +25,6 @@ public class FullDataSet extends AbstractDataSet {
 	public static final FullDataSet WEBKB = new FullDataSet("datasets/webkb");
 	public static final FullDataSet WIPO = new FullDataSet("datasets/wipo");
 
-	public static final Stream<FullDataSet> ALL = Stream.of(TWENTY_NG, CLASSIC,
-			CORA, DMOZ, MOVIES, R52, RCV1, WEBKB, WIPO);
-
 	private final DataSet EVO_TEST;
 	private final DataSet EVO_TRAIN;
 
@@ -79,5 +76,10 @@ public class FullDataSet extends AbstractDataSet {
 
 	public Path trainExplicit() {
 		return Paths.get(directory, TRAIN_EXPLICIT);
+	}
+
+	public static Stream<FullDataSet> all() {
+		return Stream.of(TWENTY_NG, CLASSIC, CORA, DMOZ, MOVIES, R52, RCV1,
+				WEBKB, WIPO);
 	}
 }
