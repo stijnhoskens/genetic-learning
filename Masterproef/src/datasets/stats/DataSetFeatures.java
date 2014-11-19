@@ -57,6 +57,10 @@ public class DataSetFeatures {
 	public double getWPDEntr() {
 		return wpdEntr;
 	}
+	
+	public double getEntry(int i) {
+		return asArray()[i];
+	}
 
 	public double[] asArray() {
 		return fields().filter(f -> {

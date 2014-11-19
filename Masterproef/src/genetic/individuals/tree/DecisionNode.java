@@ -17,7 +17,7 @@ public class DecisionNode implements DTNode {
 
 	@Override
 	public double accuracy(DataSetFeatures data) {
-		if (range.contains(data))
+		if (range.test(data))
 			return _if.accuracy(data);
 		else
 			return _else.accuracy(data);

@@ -1,8 +1,10 @@
 package genetic.individuals;
 
+import java.util.function.Predicate;
+
 import datasets.stats.DataSetFeatures;
 
-public class Range {
+public class Range implements Predicate<DataSetFeatures> {
 
 	private final int i;
 	private final double from;
@@ -18,9 +20,22 @@ public class Range {
 		return i;
 	}
 
-	public boolean contains(DataSetFeatures features) {
-		double toCheck = features.asArray()[i];
+	public double getFrom() {
+		return from;
+	}
+
+	public double getTo() {
+		return to;
+	}
+
+	@Override
+	public boolean test(DataSetFeatures features) {
+		double toCheck = features.getEntry(i);
 		return toCheck >= from && toCheck < to;
+	}
+
+	public Range mutated(double fromInclusive, double toExclusive) {
+		return new Range(i, fromInclusive, toExclusive);
 	}
 
 }
