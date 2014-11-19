@@ -5,10 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import exceptions.PopulationSizeException;
 import genetic.individuals.Individual;
+import genetic.init.IndividualGenerator;
 
 public class Population<T extends Individual> {
 
@@ -16,6 +19,11 @@ public class Population<T extends Individual> {
 
 	public Population(Collection<T> individuals) {
 		this.individuals = new ArrayList<>(individuals);
+	}
+
+	public Population(IndividualGenerator<T> generator, int size) {
+		individuals = IntStream.range(0, size).mapToObj(i -> generator.get())
+				.collect(Collectors.toList());
 	}
 
 	public T getIndividual(int index) {
