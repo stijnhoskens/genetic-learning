@@ -1,9 +1,9 @@
 package genetic.individuals.tree;
 
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
 public interface DTNode {
 
-	double accuracy(DataSetFeatures data);
+	double accuracy(Features data);
 
 }

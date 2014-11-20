@@ -50,7 +50,7 @@ public class FeatureStatistics {
 
 	public static FeatureStatistics build() {
 		Set<double[]> arrays = DataSet.trainingSets()
-				.map(DataSetFeatures::load).map(DataSetFeatures::asArray)
+				.map(Features::load).map(Features::asArray)
 				.collect(Collectors.toSet());
 		int nbOfFeatures = arrays.iterator().next().length;
 		List<DoubleDistribution> dds = IntStream

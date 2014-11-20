@@ -4,15 +4,15 @@ import genetic.individuals.Individual;
 
 import java.util.Set;
 
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
 public class TreeClassifier implements Individual {
 
-	private final Set<DataSetFeatures> datasets;
+	private final Set<Features> datasets;
 	private final DTNode initial;
 	private double fitness = -1;
 
-	public TreeClassifier(Set<DataSetFeatures> datasets, DTNode initialNode) {
+	public TreeClassifier(Set<Features> datasets, DTNode initialNode) {
 		this.datasets = datasets;
 		this.initial = initialNode;
 	}

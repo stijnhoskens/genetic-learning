@@ -1,26 +1,26 @@
 package genetic.individuals.rules;
 
-import genetic.individuals.Range;
+import genetic.individuals.RangeCheck;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
-public class Condition implements Predicate<DataSetFeatures> {
+public class Condition implements Predicate<Features> {
 
 	public static final Condition ELSE = new Condition() {
 		@Override
-		public boolean test(DataSetFeatures features) {
+		public boolean test(Features features) {
 			return true;
 		}
 	};
 
-	private final Collection<Range> ranges;
+	private final Collection<RangeCheck> ranges;
 
-	public Condition(Collection<Range> ranges) {
+	public Condition(Collection<RangeCheck> ranges) {
 		this.ranges = new HashSet<>(ranges);
 	}
 
@@ -29,7 +29,7 @@ public class Condition implements Predicate<DataSetFeatures> {
 	}
 
 	@Override
-	public boolean test(DataSetFeatures features) {
+	public boolean test(Features features) {
 		return ranges.stream().allMatch(r -> r.test(features));
 	}
 

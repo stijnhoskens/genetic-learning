@@ -1,22 +1,16 @@
 package genetic.individuals.rules;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import weka.classifiers.Classifier;
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
-public class RuleList implements Function<DataSetFeatures, Classifier> {
+public class RuleList implements Function<Features, String> {
 
 	private final List<Rule> rules;
 	private final Rule _else;
-
-	public RuleList(List<Rule> rules, Rule _else) {
-		this.rules = new ArrayList<>(rules);
-		this._else = _else;
-	}
 
 	public RuleList(List<Rule> rules, Action _else) {
 		this.rules = new ArrayList<>(rules);
@@ -24,11 +18,16 @@ public class RuleList implements Function<DataSetFeatures, Classifier> {
 	}
 
 	@Override
-	public Classifier apply(DataSetFeatures features) {
-		Path train = features.getDataSet().train();
+	public String apply(Features features) {
 		for (Rule rule : rules)
 			if (rule.test(features))
-				return rule.apply(train);
-		return _else.apply(train);
+				return rule.get();
+		return _else.get();
+	}
+
+	public List<Rule> getRules() {
+		List<Rule> r = new ArrayList<>(rules);
+		r.add(_else);
+		return Collections.unmodifiableList(r);
 	}
 }

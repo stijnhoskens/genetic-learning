@@ -12,8 +12,8 @@ import datasets.DataSet;
 
 public class StatisticsExtractor {
 
-	public static DataSetFeatures extract(DataSet data) throws Exception {
-		DataSetFeatures features = new DataSetFeatures(data);
+	public static Features extract(DataSet data) throws Exception {
+		Features features = new Features(data);
 		List<String> topics = TopicsCollector.load(data.fullDataSet());
 		features.nbOfTopics = topics.size();
 		Path train = data.train();

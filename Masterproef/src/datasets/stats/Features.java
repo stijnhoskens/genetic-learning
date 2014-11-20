@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import datasets.DataSet;
 
-public class DataSetFeatures {
+public class Features {
 
 	private final DataSet data;
 
@@ -30,7 +30,7 @@ public class DataSetFeatures {
 	 */
 	double wpdAvg, wpdStd, wpdEntr;
 
-	DataSetFeatures(DataSet data) {
+	Features(DataSet data) {
 		this.data = data;
 	}
 
@@ -57,9 +57,13 @@ public class DataSetFeatures {
 	public double getWPDEntr() {
 		return wpdEntr;
 	}
-	
+
 	public double getEntry(int i) {
 		return asArray()[i];
+	}
+
+	public int nbOfFeatures() {
+		return asArray().length;
 	}
 
 	public double[] asArray() {
@@ -80,13 +84,13 @@ public class DataSetFeatures {
 		}).toArray();
 	}
 
-	public static DataSetFeatures load(DataSet data) {
-		DataSetFeatures stats = new DataSetFeatures(data);
+	public static Features load(DataSet data) {
+		Features stats = new Features(data);
 		for (String l : IO.allLines(data.stats())) {
 			try {
 				String[] splitted = l.split(" ");
 				String fieldName = splitted[0];
-				Field field = DataSetFeatures.class.getDeclaredField(fieldName);
+				Field field = Features.class.getDeclaredField(fieldName);
 				if (splitted[2].equals("int"))
 					field.set(stats, Integer.parseInt(splitted[1]));
 				else if (splitted[2].equals("double"))

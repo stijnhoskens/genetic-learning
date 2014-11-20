@@ -1,17 +1,22 @@
 package genetic.individuals.rules;
 
-import java.nio.file.Path;
-import java.util.function.Function;
+import genetic.individuals.Evaluator;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-import weka.classifiers.Classifier;
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
-public class Rule implements Predicate<DataSetFeatures>,
-		Function<Path, Classifier> {
+public class Rule implements Predicate<Features>, Supplier<String> {
 
 	private final Condition cond;
 	private final Action act;
+
+	private double score = 0;
+	private Set<Features> alreadyPassed = new HashSet<>();
 
 	public Rule(Condition condition, Action action) {
 		cond = condition;
@@ -19,13 +24,31 @@ public class Rule implements Predicate<DataSetFeatures>,
 	}
 
 	@Override
-	public boolean test(DataSetFeatures features) {
+	public boolean test(Features features) {
 		return cond.test(features);
 	}
 
 	@Override
-	public Classifier apply(Path train) {
-		return act.apply(train);
+	public String get() {
+		return act.get();
+	}
+
+	public double evaluate(Features features, Evaluator evaluator) {
+		double evaluation = evaluator.evaluate(get(), features.getDataSet());
+		if (!alreadyPassed.contains(features)) {
+			double othersScore = score * alreadyPassed.size();
+			alreadyPassed.add(features);
+			score = (evaluation + othersScore) / alreadyPassed.size();
+		}
+		return evaluation;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	public Set<Features> getApplicableData() {
+		return Collections.unmodifiableSet(alreadyPassed);
 	}
 
 	public static Rule elseRule(Action action) {

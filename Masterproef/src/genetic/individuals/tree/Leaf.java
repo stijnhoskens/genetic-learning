@@ -5,7 +5,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
-import datasets.stats.DataSetFeatures;
+import datasets.stats.Features;
 
 public class Leaf implements DTNode {
 
@@ -16,7 +16,7 @@ public class Leaf implements DTNode {
 	}
 
 	@Override
-	public double accuracy(DataSetFeatures data) {
+	public double accuracy(Features data) {
 		try {
 			Instances train = new DataSource(data.getDataSet().train()
 					.toString()).getDataSet();
