@@ -34,4 +34,9 @@ public class RuledIndividual implements Individual {
 			return eval.evaluate(clsfr, features.getDataSet());
 		}).sum();
 	}
+
+	@Override
+	public String toString() {
+		return rList.toString() + "\nfitness: " + fitness;
+	}
 }

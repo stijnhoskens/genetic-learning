@@ -16,6 +16,7 @@ import datasets.DataSet;
 public class FeatureStatistics {
 
 	private static final Path PATH = Paths.get("datasets/stats.txt");
+	private static final FeatureStatistics instance = load();
 	private final double[] means, stds;
 	private final Random random = new Random();
 
@@ -30,6 +31,10 @@ public class FeatureStatistics {
 
 	public double getStd(int i) {
 		return stds[i];
+	}
+
+	public int nbOfFeatures() {
+		return means.length;
 	}
 
 	public double getSample(int i) {
@@ -49,9 +54,8 @@ public class FeatureStatistics {
 	}
 
 	public static FeatureStatistics build() {
-		Set<double[]> arrays = DataSet.trainingSets()
-				.map(Features::load).map(Features::asArray)
-				.collect(Collectors.toSet());
+		Set<double[]> arrays = DataSet.trainingSets().map(Features::load)
+				.map(Features::asArray).collect(Collectors.toSet());
 		int nbOfFeatures = arrays.iterator().next().length;
 		List<DoubleDistribution> dds = IntStream
 				.range(0, nbOfFeatures)
@@ -80,6 +84,10 @@ public class FeatureStatistics {
 					stds[i] = values[1];
 				});
 		return new FeatureStatistics(means, stds);
+	}
+
+	public static FeatureStatistics get() {
+		return instance;
 	}
 
 	public static void main(String[] args) {

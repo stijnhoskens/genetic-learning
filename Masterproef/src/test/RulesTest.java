@@ -3,7 +3,6 @@ package test;
 import static org.junit.Assert.assertEquals;
 import genetic.individuals.Evaluator;
 import genetic.individuals.RangeCheck;
-import genetic.individuals.rules.Action;
 import genetic.individuals.rules.Condition;
 import genetic.individuals.rules.Rule;
 import genetic.individuals.rules.RuleList;
@@ -38,10 +37,8 @@ public class RulesTest {
 	public void test() {
 		RangeCheck check = new RangeCheck(0, 3000, true);
 		Condition condition = new Condition(Arrays.asList(check));
-		Action action = new Action("SVM");
-		Rule rule = new Rule(condition, action);
-		Action elseAction = new Action("kNN");
-		RuleList rules = new RuleList(Arrays.asList(rule), elseAction);
+		Rule rule = new Rule(condition, "SVM");
+		RuleList rules = new RuleList(Arrays.asList(rule), "kNN");
 		Evaluator eval = new Evaluator();
 		long start = System.currentTimeMillis();
 		System.out.println(eval.evaluate("kNN", data1));

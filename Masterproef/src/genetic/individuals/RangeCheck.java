@@ -53,4 +53,9 @@ public class RangeCheck implements Predicate<Features> {
 		return new RangeCheck(i, fromInclusive, toExclusive);
 	}
 
+	@Override
+	public String toString() {
+		return from + " <= features[" + i + "] < " + to;
+	}
+
 }

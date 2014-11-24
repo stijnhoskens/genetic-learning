@@ -13,12 +13,12 @@ import datasets.stats.Features;
 public class Rule implements Predicate<Features>, Supplier<String> {
 
 	private final Condition cond;
-	private final Action act;
+	private final String act;
 
 	private double score = 0;
 	private Set<Features> alreadyPassed = new HashSet<>();
 
-	public Rule(Condition condition, Action action) {
+	public Rule(Condition condition, String action) {
 		cond = condition;
 		act = action;
 	}
@@ -30,7 +30,7 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 
 	@Override
 	public String get() {
-		return act.get();
+		return act;
 	}
 
 	public double evaluate(Features features, Evaluator evaluator) {
@@ -51,8 +51,13 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 		return Collections.unmodifiableSet(alreadyPassed);
 	}
 
-	public static Rule elseRule(Action action) {
+	public static Rule elseRule(String action) {
 		return new Rule(Condition.ELSE, action);
+	}
+
+	@Override
+	public String toString() {
+		return "IF " + cond.toString() + " THEN " + act;
 	}
 
 }

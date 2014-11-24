@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.Predicate;
 
+import util.Joiner;
 import datasets.stats.Features;
 
 public class Condition implements Predicate<Features> {
@@ -31,6 +32,11 @@ public class Condition implements Predicate<Features> {
 	@Override
 	public boolean test(Features features) {
 		return ranges.stream().allMatch(r -> r.test(features));
+	}
+
+	@Override
+	public String toString() {
+		return Joiner.join(ranges.stream().map(RangeCheck::toString), " && ");
 	}
 
 }

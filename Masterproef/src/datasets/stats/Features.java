@@ -18,7 +18,7 @@ public class Features {
 	/*
 	 * GENERAL FEATURES
 	 */
-	int nbOfDocs, nbOfTopics;
+	double nbOfDocs, nbOfTopics;
 
 	/*
 	 * DOCS-PER-TOPIC SPECIFIC
@@ -38,11 +38,11 @@ public class Features {
 		return data;
 	}
 
-	public int getNbOfDocs() {
+	public double getNbOfDocs() {
 		return nbOfDocs;
 	}
 
-	public int getNbOfTopics() {
+	public double getNbOfTopics() {
 		return nbOfTopics;
 	}
 
@@ -62,8 +62,9 @@ public class Features {
 		return asArray()[i];
 	}
 
-	public int nbOfFeatures() {
-		return asArray().length;
+	public static int nbOfFeatures() {
+		return (int) fields().filter(f -> f.getType().equals(double.class))
+				.count();
 	}
 
 	public double[] asArray() {
@@ -91,10 +92,7 @@ public class Features {
 				String[] splitted = l.split(" ");
 				String fieldName = splitted[0];
 				Field field = Features.class.getDeclaredField(fieldName);
-				if (splitted[2].equals("int"))
-					field.set(stats, Integer.parseInt(splitted[1]));
-				else if (splitted[2].equals("double"))
-					field.set(stats, Double.parseDouble(splitted[1]));
+				field.set(stats, Double.parseDouble(splitted[1]));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -106,23 +104,18 @@ public class Features {
 		Path path = data.stats();
 		if (!Files.exists(path))
 			Files.createFile(path);
-		IO.write(
-				path,
-				w -> fields().forEach(
-						f -> {
-							try {
-								if (!f.getName().equals("data"))
-									IO.writeLine(w,
-											f.getName() + " " + f.get(this)
-													+ " " + f.getType());
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}));
+		IO.write(path, w -> fields().forEach(f -> {
+			try {
+				if (!f.getName().equals("data"))
+					IO.writeLine(w, f.getName() + " " + f.get(this));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}));
 	}
 
-	private Stream<Field> fields() {
-		return Arrays.stream(getClass().getDeclaredFields());
+	private static Stream<Field> fields() {
+		return Arrays.stream(Features.class.getDeclaredFields());
 	}
 
 	@Override
@@ -139,8 +132,7 @@ public class Features {
 	}
 
 	public static void main(String[] args) throws IOException {
-		System.out.println(Arrays.toString(load(DataSet.CLASSIC_TRAIN)
-				.asArray()));
+
 	}
 
 }

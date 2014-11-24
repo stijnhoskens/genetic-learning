@@ -19,7 +19,7 @@ public class StatisticsExtractor {
 		Path train = data.train();
 		IntDistribution topicDistribution = getTopicDistribution(train);
 		IntSummaryStatistics stats = topicDistribution.frequencyStats();
-		features.nbOfDocs = (int) stats.getSum();
+		features.nbOfDocs = stats.getSum();
 		features.dptStd = topicDistribution.standardDeviation();
 		features.dptEntr = topicDistribution.entropy();
 		IntDistribution docDistribution = getDocDistribution(train);

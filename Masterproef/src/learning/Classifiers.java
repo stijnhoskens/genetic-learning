@@ -1,27 +1,19 @@
 package learning;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import genetic.Config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import util.Joiner;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.bayes.NaiveBayesMultinomial;
-import weka.classifiers.functions.LibLINEAR;
-import weka.classifiers.lazy.IBk;
-import weka.classifiers.trees.J48;
 
 public class Classifiers {
-
-	private static final Map<String, AbstractClassifier> CLASSIFIERS = new HashMap<String, AbstractClassifier>() {
-		private static final long serialVersionUID = 1L;
-		{
-			put("SVM", new LibLINEAR());
-			put("NaiveBayes", new NaiveBayesMultinomial());
-			put("kNN", new IBk());
-			put("DT", new J48());
-		}
-	};
 
 	/**
 	 * Returns a classifier specified by its name. The name can also include
@@ -41,8 +33,45 @@ public class Classifiers {
 	public static Classifier get(String name) throws Exception {
 		String[] tokens = name.split(" ");
 		String[] parameters = Arrays.copyOfRange(tokens, 1, tokens.length);
-		AbstractClassifier clsfr = CLASSIFIERS.get(tokens[0]);
+		AbstractClassifier clsfr = getClassifier(tokens[0]);
 		clsfr.setOptions(parameters);
 		return clsfr;
+	}
+
+	private static AbstractClassifier getClassifier(String name) {
+		try {
+			return (AbstractClassifier) Class.forName(
+					Config.CLASSIFIERS.getProperty(name).split(" ")[0])
+					.newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Set<String> all() {
+		return Config.CLASSIFIERS.stringPropertyNames();
+	}
+
+	public static String randomClassifier() {
+		List<String> list = new ArrayList<>(all());
+		Random r = new Random();
+		String name = list.get(r.nextInt(list.size()));
+		String parameters = Joiner.join(
+				getParametersOf(name).stream().map(
+						p -> p.toString(r.nextInt(p.nbOfValues()))), " ");
+		return name + " " + parameters;
+
+	}
+
+	public static Set<Parameter> getParametersOf(String name) {
+		String[] splitted = Config.CLASSIFIERS.getProperty(name).split(" ");
+		String[] parameters = Arrays.copyOfRange(splitted, 1, splitted.length);
+		return Arrays.stream(parameters).map(Parameter::new)
+				.collect(Collectors.toSet());
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(get(randomClassifier()).getClass());
 	}
 }
