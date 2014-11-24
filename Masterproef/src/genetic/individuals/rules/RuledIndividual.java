@@ -37,6 +37,8 @@ public class RuledIndividual implements Individual {
 
 	@Override
 	public String toString() {
-		return rList.toString() + "\nfitness: " + fitness;
+		String fit = fitness == -1 ? "not yet calculated" : String
+				.valueOf(fitness);
+		return rList.toString() + "\nfitness: " + fit;
 	}
 }
