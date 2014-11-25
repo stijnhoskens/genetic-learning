@@ -69,6 +69,8 @@ public class Mutator implements MutationStrategy<RuledIndividual> {
 		};
 	}
 
+	// TODO implement a way to prefer changing parameters over the model.
+
 	private MutationStrategy<RuledIndividual> action() {
 		return i -> {
 			List<Rule> rules = getRules(i);
