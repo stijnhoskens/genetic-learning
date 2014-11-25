@@ -1,6 +1,9 @@
 package genetic.individuals;
 
 import genetic.individuals.rules.RuleList;
+import genetic.individuals.rules.RuledIndividual;
+import genetic.init.IndividualGenerator;
+import genetic.init.RandomGenerator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import learning.Classifiers;
 import weka.classifiers.Classifier;
@@ -53,7 +57,7 @@ public class Evaluator {
 	public double evaluate(String clsfrName, DataSet data) {
 		try {
 			String key = clsfrName + "@" + data.toString();
-			if (cache.keySet().contains(key))
+			if (cache.containsKey(key))
 				return Double.valueOf(cache.getProperty(key));
 			Instances train = new DataSource(data.train().toString())
 					.getDataSet();
@@ -93,10 +97,22 @@ public class Evaluator {
 		}).average().orElse(0);
 	}
 
+	private static void fillCache() {
+		Set<Features> features = DataSet.trainingSets().map(Features::load)
+				.collect(Collectors.toSet());
+		Evaluator eval = new Evaluator();
+		IndividualGenerator<RuledIndividual> gen = new RandomGenerator(
+				features, eval);
+		while (true) {
+			long time = System.currentTimeMillis();
+			gen.get().fitness();
+			long elapsed = System.currentTimeMillis() - time;
+			System.out.print("Elapsed time: ");
+			System.out.println(elapsed);
+		}
+	}
+
 	public static void main(String[] args) {
-		long time = System.currentTimeMillis();
-		new Evaluator().evaluate("NaiveBayes", DataSet.TWENTY_NG_TRAIN);
-		long elapsed = System.currentTimeMillis() - time;
-		System.out.println(elapsed);
+		fillCache();
 	}
 }

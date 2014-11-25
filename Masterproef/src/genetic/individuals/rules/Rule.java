@@ -55,6 +55,14 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 		return new Rule(Condition.ELSE, action);
 	}
 
+	public Rule withNewCondition(Condition condition) {
+		return new Rule(condition, act);
+	}
+
+	public Rule withNewAction(String action) {
+		return new Rule(cond, action);
+	}
+
 	@Override
 	public String toString() {
 		return "IF " + cond.toString() + " THEN " + act;

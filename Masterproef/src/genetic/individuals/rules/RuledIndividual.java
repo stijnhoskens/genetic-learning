@@ -3,6 +3,7 @@ package genetic.individuals.rules;
 import genetic.individuals.Evaluator;
 import genetic.individuals.Individual;
 
+import java.util.List;
 import java.util.Set;
 
 import datasets.stats.Features;
@@ -34,6 +35,18 @@ public class RuledIndividual implements Individual {
 
 	public Evaluator getEvaluator() {
 		return eval;
+	}
+
+	public RuleList getRules() {
+		return rList;
+	}
+
+	public RuledIndividual withNewRules(RuleList rules) {
+		return new RuledIndividual(data, rules, eval);
+	}
+
+	public RuledIndividual withNewRules(List<Rule> rules) {
+		return withNewRules(new RuleList(rules));
 	}
 
 	@Override

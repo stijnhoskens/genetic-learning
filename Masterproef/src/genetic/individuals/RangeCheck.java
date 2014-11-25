@@ -54,7 +54,11 @@ public class RangeCheck implements Predicate<Features> {
 	}
 
 	public static RangeCheck identity() {
-		return new RangeCheck(-1, Double.NEGATIVE_INFINITY,
+		return identity(-1);
+	}
+
+	public static RangeCheck identity(int index) {
+		return new RangeCheck(index, Double.NEGATIVE_INFINITY,
 				Double.POSITIVE_INFINITY);
 	}
 
@@ -75,6 +79,38 @@ public class RangeCheck implements Predicate<Features> {
 	@Override
 	public String toString() {
 		return from + " <= features[" + i + "] < " + to;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(from);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + i;
+		temp = Double.doubleToLongBits(to);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RangeCheck other = (RangeCheck) obj;
+		if (Double.doubleToLongBits(from) != Double
+				.doubleToLongBits(other.from))
+			return false;
+		if (i != other.i)
+			return false;
+		if (Double.doubleToLongBits(to) != Double.doubleToLongBits(other.to))
+			return false;
+		return true;
 	}
 
 }

@@ -114,6 +114,10 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 			}
 	}
 
+	protected abstract void problemSpecificInitialisation();
+
+	protected abstract void problemSpecific();
+
 	public void setIndividualGenerator(IndividualGenerator<T> supplier) {
 		init = supplier;
 	}
@@ -159,9 +163,8 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 		updateProgress();
 	}
 
-	protected abstract void problemSpecific();
-
 	private void initialize() {
+		problemSpecificInitialisation();
 		startTime = System.currentTimeMillis();
 		population = initializePopulation();
 		nbOfIterations = 0;

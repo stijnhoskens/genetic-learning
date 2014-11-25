@@ -1,7 +1,6 @@
 package genetic.individuals.rules;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -41,10 +40,10 @@ public class RuleList implements Function<Features, String> {
 		return _else.get();
 	}
 
-	public List<Rule> getRules() {
+	public List<Rule> asList() {
 		List<Rule> r = new ArrayList<>(rules);
 		r.add(_else);
-		return Collections.unmodifiableList(r);
+		return r;
 	}
 
 	@Override
