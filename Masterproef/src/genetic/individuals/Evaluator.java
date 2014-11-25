@@ -2,12 +2,15 @@ package genetic.individuals;
 
 import genetic.individuals.rules.RuleList;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.Set;
 
 import learning.Classifiers;
-import util.Pair;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
@@ -18,14 +21,21 @@ import datasets.stats.Features;
 public class Evaluator {
 
 	private final Metric metric;
-	private final Map<Pair<String, DataSet>, Double> cache = new HashMap<>();
+	private static final Path CACHE_PATH = Paths.get("datasets/cache.txt");
+	private final Properties cache;
 
 	public Evaluator(Metric metric) {
 		this.metric = metric;
+		cache = new Properties();
+		try {
+			cache.load(Files.newInputStream(CACHE_PATH));
+		} catch (IOException e) {
+			// do nothing, an empty properties object will be returned.
+		}
 	}
 
 	public Evaluator() {
-		metric = Metric.PROCENT_CORRECT;
+		this(Metric.PROCENT_CORRECT);
 	}
 
 	public enum Metric {
@@ -42,9 +52,9 @@ public class Evaluator {
 
 	public double evaluate(String clsfrName, DataSet data) {
 		try {
-			Pair<String, DataSet> pair = new Pair<>(clsfrName, data);
-			if (cache.containsKey(pair))
-				return cache.get(pair);
+			String key = clsfrName + "@" + data.toString();
+			if (cache.keySet().contains(key))
+				return Double.valueOf(cache.getProperty(key));
 			Instances train = new DataSource(data.train().toString())
 					.getDataSet();
 			train.setClassIndex(train.numAttributes() - 1);
@@ -56,11 +66,23 @@ public class Evaluator {
 			Evaluation eval = new Evaluation(train);
 			eval.evaluateModel(classifier, test);
 			double evaluation = metric.value(eval);
-			cache.put(pair, evaluation);
+			putProperty(key, evaluation);
 			return metric.value(eval);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	private void putProperty(String key, double evaluation) {
+		cache.setProperty(key, String.valueOf(evaluation));
+		OutputStream output;
+		try {
+			output = Files.newOutputStream(CACHE_PATH);
+			cache.store(output, null);
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -71,9 +93,10 @@ public class Evaluator {
 		}).average().orElse(0);
 	}
 
-	public Map<Pair<String, DataSet>, Double> flushCache() {
-		Map<Pair<String, DataSet>, Double> copy = new HashMap<>(cache);
-		cache.clear();
-		return copy;
+	public static void main(String[] args) {
+		long time = System.currentTimeMillis();
+		new Evaluator().evaluate("NaiveBayes", DataSet.TWENTY_NG_TRAIN);
+		long elapsed = System.currentTimeMillis() - time;
+		System.out.println(elapsed);
 	}
 }

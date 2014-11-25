@@ -2,19 +2,20 @@ package genetic;
 
 import genetic.crossover.CrossoverStrategy;
 import genetic.individuals.Individual;
-import genetic.init.PopulationGenerator;
+import genetic.init.IndividualGenerator;
 import genetic.mutation.MutationStrategy;
 import genetic.selection.SelectionStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
 
 import util.Pair;
 
-public class GeneticAlgorithm<T extends Individual> {
+public abstract class GeneticAlgorithm<T extends Individual> {
 
 	/*
 	 * These fields remain invariant during the full life cycle of an instance
@@ -27,7 +28,7 @@ public class GeneticAlgorithm<T extends Individual> {
 	/*
 	 * Fields used for the actual operators
 	 */
-	private PopulationGenerator<T> init;
+	private IndividualGenerator<T> init;
 	private SelectionStrategy<T> selection;
 	private MutationStrategy<T> mutation;
 	private CrossoverStrategy<T> crossover;
@@ -35,10 +36,11 @@ public class GeneticAlgorithm<T extends Individual> {
 	/*
 	 * These fields will change after every iteration of the algorithm itself
 	 */
-	private Population<T> population;
+	protected Population<T> population;
 	private int nbOfIterations;
 	private long startTime;
 	private final List<Individual> progress = new ArrayList<>();
+	private final List<DoubleSummaryStatistics> statProgress = new ArrayList<>();
 
 	private final Random r = new Random();
 
@@ -57,12 +59,13 @@ public class GeneticAlgorithm<T extends Individual> {
 			mutate(selected);
 			population.replaceWith(selected);
 			paperWork();
+			problemSpecific();
 		}
 		return population.bestIndividual();
 	}
 
 	protected Population<T> initializePopulation() {
-		return init.get(popSize);
+		return new Population<>(init, popSize);
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class GeneticAlgorithm<T extends Individual> {
 			}
 	}
 
-	public void setPopulationGenerator(PopulationGenerator<T> supplier) {
+	public void setIndividualGenerator(IndividualGenerator<T> supplier) {
 		init = supplier;
 	}
 
@@ -156,6 +159,8 @@ public class GeneticAlgorithm<T extends Individual> {
 		updateProgress();
 	}
 
+	protected abstract void problemSpecific();
+
 	private void initialize() {
 		startTime = System.currentTimeMillis();
 		population = initializePopulation();
@@ -164,6 +169,8 @@ public class GeneticAlgorithm<T extends Individual> {
 
 	private void updateProgress() {
 		progress.add(population.bestIndividual());
+		statProgress.add(population.asList().stream().mapToDouble(T::fitness)
+				.summaryStatistics());
 	}
 
 }

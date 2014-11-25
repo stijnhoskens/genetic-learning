@@ -53,6 +53,25 @@ public class RangeCheck implements Predicate<Features> {
 		return new RangeCheck(i, fromInclusive, toExclusive);
 	}
 
+	public static RangeCheck identity() {
+		return new RangeCheck(-1, Double.NEGATIVE_INFINITY,
+				Double.POSITIVE_INFINITY);
+	}
+
+	/**
+	 * @pre both range checks should be for the same index.
+	 */
+	public RangeCheck merge(RangeCheck other) {
+		int index;
+		if (i < 0)
+			index = other.i;
+		else
+			index = i;
+		double largestFrom = Math.max(from, other.from);
+		double smallestTo = Math.min(to, other.to);
+		return new RangeCheck(index, largestFrom, smallestTo);
+	}
+
 	@Override
 	public String toString() {
 		return from + " <= features[" + i + "] < " + to;

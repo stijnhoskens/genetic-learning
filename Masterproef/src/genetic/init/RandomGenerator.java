@@ -14,6 +14,7 @@ import datasets.stats.FeatureStatistics;
 import datasets.stats.Features;
 import util.Statistics;
 import genetic.Config;
+import genetic.Population;
 import genetic.individuals.Evaluator;
 import genetic.individuals.RangeCheck;
 import genetic.individuals.rules.Condition;
@@ -68,8 +69,10 @@ public class RandomGenerator implements IndividualGenerator<RuledIndividual> {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(new RandomGenerator(DataSet.trainingSets()
-				.map(Features::load).collect(Collectors.toSet()),
-				new Evaluator()).get());
+		Set<Features> features = DataSet.trainingSets().map(Features::load)
+				.collect(Collectors.toSet());
+		Evaluator eval = new Evaluator();
+		System.out.println(new Population<>(
+				new RandomGenerator(features, eval), 10));
 	}
 }

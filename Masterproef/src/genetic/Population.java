@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import util.Joiner;
 import exceptions.PopulationSizeException;
 import genetic.individuals.Individual;
 import genetic.init.IndividualGenerator;
@@ -65,6 +66,11 @@ public class Population<T extends Individual> {
 		if (individuals.size() != this.individuals.size())
 			throw new PopulationSizeException(this.individuals.size(),
 					individuals.size());
+	}
+
+	@Override
+	public String toString() {
+		return Joiner.join(asStream().map(T::toString), "\n\n");
 	}
 
 }
