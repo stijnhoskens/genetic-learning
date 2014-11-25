@@ -29,10 +29,11 @@ public class RuledIndividual implements Individual {
 	}
 
 	private double calculateFitness() {
-		return data.stream().mapToDouble(features -> {
-			String clsfr = rList.apply(features);
-			return eval.evaluate(clsfr, features.getDataSet());
-		}).sum();
+		return eval.evaluate(rList, data);
+	}
+
+	public Evaluator getEvaluator() {
+		return eval;
 	}
 
 	@Override

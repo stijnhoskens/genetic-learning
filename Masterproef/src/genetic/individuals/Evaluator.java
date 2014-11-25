@@ -1,7 +1,10 @@
 package genetic.individuals;
 
+import genetic.individuals.rules.RuleList;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import learning.Classifiers;
 import util.Pair;
@@ -10,6 +13,7 @@ import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
+import datasets.stats.Features;
 
 public class Evaluator {
 
@@ -58,6 +62,13 @@ public class Evaluator {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+	public double evaluate(RuleList rList, Set<Features> data) {
+		return data.stream().mapToDouble(features -> {
+			String clsfr = rList.apply(features);
+			return evaluate(clsfr, features.getDataSet());
+		}).average().orElse(0);
 	}
 
 	public Map<Pair<String, DataSet>, Double> flushCache() {
