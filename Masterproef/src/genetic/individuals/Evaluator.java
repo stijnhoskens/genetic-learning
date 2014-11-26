@@ -93,6 +93,10 @@ public class Evaluator {
 	public double evaluate(RuleList rList, Set<Features> data) {
 		return data.stream().mapToDouble(features -> {
 			String clsfr = rList.apply(features);
+			System.out.print("Evaluating ");
+			System.out.print(clsfr);
+			System.out.print(" on ");
+			System.out.println(features.getDataSet());
 			return evaluate(clsfr, features.getDataSet());
 		}).average().orElse(0);
 	}
