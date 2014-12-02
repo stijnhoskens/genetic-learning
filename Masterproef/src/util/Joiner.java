@@ -6,6 +6,10 @@ import java.util.stream.Stream;
 
 public class Joiner {
 
+	public static String join(String delimiter, String... elements) {
+		return join(Stream.of(elements), delimiter);
+	}
+	
 	public static String join(Stream<String> elements, String delimiter) {
 		return elements.collect(joining(delimiter));
 	}

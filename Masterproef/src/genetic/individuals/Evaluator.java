@@ -1,9 +1,6 @@
 package genetic.individuals;
 
 import genetic.individuals.rules.RuleList;
-import genetic.individuals.rules.RuledIndividual;
-import genetic.init.IndividualGenerator;
-import genetic.init.RandomGenerator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import learning.Classifiers;
@@ -93,27 +92,21 @@ public class Evaluator {
 	public double evaluate(RuleList rList, Set<Features> data) {
 		return data.stream().mapToDouble(features -> {
 			String clsfr = rList.apply(features);
-			System.out.print("Evaluating ");
-			System.out.print(clsfr);
-			System.out.print(" on ");
-			System.out.println(features.getDataSet());
-			return evaluate(clsfr, features.getDataSet());
+			return evaluate(features, clsfr);
 		}).average().orElse(0);
 	}
 
-	private static void fillCache() {
+	private double evaluate(Features f, String c) {
+		return evaluate(c, f.getDataSet());
+	}
+
+	protected static void fillCache() {
 		Set<Features> features = DataSet.trainingSets().map(Features::load)
 				.collect(Collectors.toSet());
 		Evaluator eval = new Evaluator();
-		IndividualGenerator<RuledIndividual> gen = new RandomGenerator(
-				features, eval);
-		while (true) {
-			long time = System.currentTimeMillis();
-			gen.get().fitness();
-			long elapsed = System.currentTimeMillis() - time;
-			System.out.print("Elapsed time: ");
-			System.out.println(elapsed);
-		}
+		ExecutorService threadpool = Executors.newFixedThreadPool(2);
+		features.forEach(f -> Classifiers.allOptions().forEach(
+				s -> threadpool.execute(() -> eval.evaluate(f, s))));
 	}
 
 	public static void main(String[] args) {

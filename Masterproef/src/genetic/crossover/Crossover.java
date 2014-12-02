@@ -49,7 +49,7 @@ public class Crossover implements CrossoverStrategy<RuledIndividual> {
 			RuledIndividual i2 = p.getSecond();
 			List<Rule> rules2 = getRules(i2);
 			int index2 = r.nextInt(rules2.size());
-			Rule rule2 = rules2.get(index1);
+			Rule rule2 = rules2.get(index2);
 			Rule newRule1 = rule1.withNewAction(rule2.get());
 			Rule newRule2 = rule2.withNewAction(rule1.get());
 			swapRule(rules1, index1, newRule1);

@@ -1,8 +1,9 @@
 package learning;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import util.Pair;
 
@@ -35,8 +36,9 @@ public class Parameter {
 		return prefix + " " + values[valueIndex];
 	}
 
-	public Stream<String> possibleValues() {
-		return IntStream.range(0, values.length).mapToObj(this::toString);
+	public Set<String> possibleValues() {
+		return IntStream.range(0, values.length).mapToObj(this::toString)
+				.collect(Collectors.toSet());
 	}
 
 	@Override

@@ -8,6 +8,6 @@ import java.util.List;
 @FunctionalInterface
 public interface SelectionStrategy<T extends Individual> {
 
-	List<T> selectionOf(Population<T> population);
-	
+	List<T> selectionOf(Population<T> population, double elitist);
+
 }

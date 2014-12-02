@@ -24,6 +24,7 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	private final double mProb;
 	private final double coProb;
 	private final int popSize;
+	private final double elitist;
 
 	/*
 	 * Fields used for the actual operators
@@ -45,18 +46,21 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	private final Random r = new Random();
 
 	public GeneticAlgorithm(double mutationP, double crossoverP,
-			int populationSize) {
+			int populationSize, double elite) {
 		mProb = mutationP;
 		coProb = crossoverP;
 		popSize = populationSize;
+		elitist = elite;
 	}
 
-	public Individual apply(BooleanSupplier termination) {
+	public T apply(BooleanSupplier termination) {
 		initialize();
 		while (!termination.getAsBoolean()) {
 			List<T> selected = select();
+			List<T> elites = elites();
 			crossover(selected);
 			mutate(selected);
+			selected.addAll(elites);
 			population.replaceWith(selected);
 			paperWork();
 			problemSpecific();
@@ -77,7 +81,7 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	 *         with size popSize
 	 */
 	protected List<T> select() {
-		return selection.selectionOf(population);
+		return selection.selectionOf(population, elitist);
 	}
 
 	/**
@@ -89,7 +93,7 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	 * @note for correctness it is preferred to have an even population size.
 	 */
 	protected void crossover(List<T> selected) {
-		for (int i = 0; i < selected.size() / 2; i++)
+		for (int i = 0; i < selected.size() / 2 - 1; i++)
 			if (r.nextDouble() < coProb) {
 				int j = 2 * i;
 				int k = 2 * i + 1;
@@ -156,6 +160,15 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	 */
 	public synchronized List<Individual> getProgress() {
 		return Collections.unmodifiableList(progress);
+	}
+
+	public synchronized List<DoubleSummaryStatistics> getStatProgress() {
+		return Collections.unmodifiableList(statProgress);
+	}
+
+	private List<T> elites() {
+		return new ArrayList<>(population.asSortedList().subList(0,
+				(int) (population.size() * elitist)));
 	}
 
 	private synchronized void paperWork() {

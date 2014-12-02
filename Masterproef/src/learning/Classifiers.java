@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 import util.Joiner;
 import weka.classifiers.AbstractClassifier;
@@ -64,14 +66,35 @@ public class Classifiers {
 
 	}
 
-	public static Set<Parameter> getParametersOf(String name) {
+	public static List<Parameter> getParametersOf(String name) {
 		String[] splitted = Config.CLASSIFIERS.getProperty(name).split(" ");
 		String[] parameters = Arrays.copyOfRange(splitted, 1, splitted.length);
 		return Arrays.stream(parameters).map(Parameter::new)
-				.collect(Collectors.toSet());
+				.sorted((p1, p2) -> p1.toString().compareTo(p2.toString()))
+				.collect(Collectors.toList());
+	}
+
+	public static Stream<String> allOptions() {
+		return all().stream().flatMap(Classifiers::allOptionsOf);
+	}
+
+	private static Stream<String> allOptionsOf(String c) {
+		List<Parameter> parameters = getParametersOf(c);
+		if (parameters.isEmpty())
+			return Stream.of(c);
+		return parameters
+				.stream()
+				.map(Parameter::possibleValues)
+				.reduce(Stream.of("").collect(Collectors.toSet()),
+						(s1, s2) -> {
+							Builder<String> builder = Stream.builder();
+							s1.forEach(string1 -> s2.forEach(string2 -> builder
+									.accept(Joiner.join(" ", string1, string2))));
+							return builder.build().collect(Collectors.toSet());
+						}).stream().map(s -> c + s);
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(get(randomClassifier()).getClass());
+		allOptions().forEach(System.out::println);
 	}
 }

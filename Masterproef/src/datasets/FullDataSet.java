@@ -80,6 +80,6 @@ public class FullDataSet extends AbstractDataSet {
 
 	public static Stream<FullDataSet> all() {
 		return Stream.of(TWENTY_NG, CLASSIC, CORA, /* DMOZ, */MOVIES, R52,
-				RCV1, WEBKB, WIPO);
+				RCV1, WEBKB/*, WIPO*/);
 	}
 }
