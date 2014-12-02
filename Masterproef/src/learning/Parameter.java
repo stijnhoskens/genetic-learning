@@ -1,6 +1,8 @@
 package learning;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import util.Pair;
 
@@ -31,6 +33,10 @@ public class Parameter {
 
 	public String toString(int valueIndex) {
 		return prefix + " " + values[valueIndex];
+	}
+
+	public Stream<String> possibleValues() {
+		return IntStream.range(0, values.length).mapToObj(this::toString);
 	}
 
 	@Override

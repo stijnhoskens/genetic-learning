@@ -1,7 +1,5 @@
 package test;
 
-import java.util.stream.Stream;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LibLINEAR;
@@ -12,7 +10,7 @@ import datasets.DataSet;
 public class Test {
 
 	public static void main(String[] args) throws Exception {
-		DataSet data = DataSet.CLASSIC_TRAIN;
+		DataSet data = DataSet.WIPO_TRAIN;
 		DataSource src = new DataSource(data.train().toString());
 		Instances train = src.getDataSet();
 		train.setClassIndex(train.numAttributes() - 1);
@@ -20,18 +18,17 @@ public class Test {
 		Instances test = src.getDataSet();
 		test.setClassIndex(test.numAttributes() - 1);
 		AbstractClassifier clsfr = new LibLINEAR();
-		Stream.of("0.0001", "0.001", "0.01", "0.1", "1", "10", "100", "1000")
-				.forEach(s -> {
-					try {
-						clsfr.setOptions(new String[] { "-C", s });
-						clsfr.buildClassifier(train);
-						Evaluation eval = new Evaluation(train);
-						eval.evaluateModel(clsfr, test);
-						System.out.println(s);
-						System.out.println(eval.pctCorrect());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
+		long start = System.currentTimeMillis();
+		System.out.println("Started building the classifier.");
+		clsfr.buildClassifier(train);
+		long elapsed = (System.currentTimeMillis() - start) / 1000;
+		System.out.println("Building done, elapsed time: " + elapsed + "s");
+		start = System.currentTimeMillis();
+		System.out.println("Started evaluating the classifier.");
+		Evaluation eval = new Evaluation(train);
+		eval.evaluateModel(clsfr, test);
+		elapsed = (System.currentTimeMillis() - start) / 1000;
+		System.out.println("Evaluation done, elapsed time: " + elapsed + "s");
+		System.out.println(eval.pctCorrect());
 	}
 }
