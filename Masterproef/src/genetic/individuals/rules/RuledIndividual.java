@@ -30,7 +30,9 @@ public class RuledIndividual implements Individual {
 	}
 
 	private double calculateFitness() {
-		return eval.evaluate(rList, data);
+		double evaluation = eval.evaluate(rList, data);
+		rList.removeUnusedRules();
+		return evaluation;
 	}
 
 	public Evaluator getEvaluator() {

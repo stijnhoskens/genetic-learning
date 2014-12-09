@@ -21,16 +21,13 @@ import javax.swing.SwingUtilities;
 public class LineGraph extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private static int width = 800;
-	private static int height = 400;
-	private int padding = 25;
-	private int labelPadding = 25;
-	private Color lineColor = new Color(44, 102, 230, 180);
-	private Color pointColor = new Color(100, 100, 100, 180);
-	private Color gridColor = new Color(200, 200, 200, 200);
+	private static int width = 800, height = 400;
+	private int padding = 25, labelPadding = 25;
+	private Color lineColor = new Color(44, 102, 230, 180),
+			pointColor = new Color(100, 100, 100, 180), gridColor = new Color(
+					200, 200, 200, 200);
 	private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
-	private int pointWidth = 4;
-	private int numberYDivisions = 10;
+	private int pointWidth = 4, numberYDivisions = 10;
 	private List<Double> scores;
 
 	public LineGraph(List<Double> scores) {
@@ -174,6 +171,7 @@ public class LineGraph extends JPanel {
 				List<Double> scores = Arrays.stream(data).boxed()
 						.collect(Collectors.toList());
 				LineGraph mainPanel = new LineGraph(scores);
+				mainPanel.setBackground(Color.WHITE);
 				mainPanel.setPreferredSize(new Dimension(width, height));
 				JFrame frame = new JFrame("plot");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

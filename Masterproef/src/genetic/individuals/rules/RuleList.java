@@ -40,6 +40,12 @@ public class RuleList implements Function<Features, String> {
 		return _else.get();
 	}
 
+	void removeUnusedRules() {
+		List<Rule> copy = new ArrayList<>(rules);
+		rules.clear();
+		copy.stream().filter(Rule::isUsed).forEach(rules::add);
+	}
+
 	public List<Rule> asList() {
 		List<Rule> r = new ArrayList<>(rules);
 		r.add(_else);

@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import learning.Classifiers;
+import util.Joiner;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
@@ -107,6 +108,44 @@ public class Evaluator {
 		ExecutorService threadpool = Executors.newFixedThreadPool(2);
 		features.forEach(f -> Classifiers.allOptions().forEach(
 				s -> threadpool.execute(() -> eval.evaluate(f, s))));
+	}
+
+	public static void cleanCache() {
+		Evaluator eval = new Evaluator();
+		Properties cache = eval.cache;
+		Properties newCache = new Properties();
+		cache.entrySet().forEach(e -> {
+			String key = (String) e.getKey();
+			if (!key.startsWith("SVM")) {
+				newCache.setProperty(key, (String) e.getValue());
+				return;
+			}
+			String[] tokens = key.split("@");
+			String clsfr = tokens[0];
+			String[] splitted = clsfr.split(" ");
+			if (splitted[1].equals("-S")) {
+				swap(splitted, 1, 3);
+				swap(splitted, 2, 4);
+			}
+			clsfr = Joiner.join(" ", splitted);
+			tokens[0] = clsfr;
+			key = Joiner.join("@", tokens);
+			newCache.setProperty(key, (String) e.getValue());
+		});
+		OutputStream output;
+		try {
+			output = Files.newOutputStream(CACHE_PATH);
+			newCache.store(output, null);
+			output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void swap(String[] tokens, int i, int j) {
+		String temp = tokens[i];
+		tokens[i] = tokens[j];
+		tokens[j] = temp;
 	}
 
 	public static void main(String[] args) {

@@ -1,0 +1,26 @@
+OPTIMAL RESULT:
+NaiveBayes @ datasets\classic\evoTrain, score=94.96197718631178.
+SVM -C 100 -S 6 @ datasets\movies\evoTrain, score=78.72340425531915.
+SVM -C 0.01 -S 2 @ datasets\rcv1\evoTrain, score=90.45383411580595.
+NaiveBayes @ datasets\20ng\evoTrain, score=81.09198493813878.
+SVM -C 10 -S 6 @ datasets\r52\evoTrain, score=92.04204204204204.
+SVM -C 0.01 -S 3 @ datasets\cora\evoTrain, score=54.15704387990762.
+SVM -C 0.1 -S 7 @ datasets\webkb\evoTrain, score=89.07330567081604.
+AVERAGE=82.92908458404877
+
+RESULT1(0.1, 0.6, 500, 0.05, nbOfIt:300):
+IF -Infinity <= features[3] < 1.4197407233542627 THEN SVM -C 100 -S 6
+IF 55.164294293883074 <= features[1] < Infinity THEN SVM -C 0.01 -S 1
+IF -Infinity <= features[1] < 35.39883180711457 && 385.40781576038245 <= features[5] < Infinity THEN SVM -C 0.1 -S 7
+IF -Infinity <= features[1] < 31.50709702219462 && -Infinity <= features[5] < 303.55058000385947 THEN NaiveBayes 
+IF -Infinity <= features[1] < 61.029271211014276 THEN SVM -C 10 -S 6
+ELSE SVM -C 1 -S 5
+fitness: 82.91245284596825
+
+RESULT2(0.1, 0.6, 500, 0.05, nbOfIt:300):
+IF -Infinity <= features[3] < 5.252479949215155 && 255.18549747816198 <= features[4] < 541.5689861156355 THEN SVM -C 100 -S 6
+IF -Infinity <= features[1] < 108.95949273620451 && 482.1002689739525 <= features[5] < Infinity THEN SVM -C 0.1 -S 0
+IF 4.248686398768229 <= features[3] < Infinity THEN SVM -C 0.01 -S 4
+IF 0.6979891340188549 <= features[3] < 4.355465509729848 THEN NaiveBayes 
+ELSE SVM -C 0.01 -S 4
+fitness: 82.78509460822715

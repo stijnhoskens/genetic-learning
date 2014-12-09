@@ -27,9 +27,8 @@ public class Main {
 		genetic.setMutationStrategy(new Mutator());
 		genetic.setSelectionStrategy(Selection.SUS());
 		RuledIndividual best = genetic
-				.apply(() -> genetic.getNbOfIterations() >= 150);
+				.apply(() -> genetic.getNbOfIterations() >= 300);
 		System.out.println(best);
-		System.out.println(best.fitness());
 		double[] data = genetic.getStatProgress().stream()
 				.mapToDouble(DoubleSummaryStatistics::getMax).toArray();
 		LineGraph.plot(data);
