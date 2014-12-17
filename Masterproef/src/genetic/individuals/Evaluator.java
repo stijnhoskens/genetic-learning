@@ -98,11 +98,16 @@ public class Evaluator {
 	}
 
 	private double evaluate(Features f, String c) {
-		return evaluate(c, f.getDataSet());
+		// System.out.println("Evaluating "+c+" on "+f.getDataSet()+".");
+		// LocalTime start = LocalTime.now();
+		double evaluation = evaluate(c, f.getDataSet());
+		// long seconds = Duration.between(start, LocalTime.now()).getSeconds();
+		// System.out.println("Elapsed time: "+seconds+".");
+		return evaluation;
 	}
 
 	protected static void fillCache() {
-		Set<Features> features = DataSet.trainingSets().map(Features::load)
+		Set<Features> features = DataSet.all().map(Features::load)
 				.collect(Collectors.toSet());
 		Evaluator eval = new Evaluator();
 		ExecutorService threadpool = Executors.newFixedThreadPool(2);

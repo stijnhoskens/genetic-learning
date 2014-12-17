@@ -173,7 +173,7 @@ public class LineGraph extends JPanel {
 				LineGraph mainPanel = new LineGraph(scores);
 				mainPanel.setBackground(Color.WHITE);
 				mainPanel.setPreferredSize(new Dimension(width, height));
-				JFrame frame = new JFrame("plot");
+				JFrame frame = new JFrame("Evolution of the best score");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(mainPanel);
 				frame.pack();
