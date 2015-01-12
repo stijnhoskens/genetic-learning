@@ -27,6 +27,7 @@ public class Evaluator {
 	private final Metric metric;
 	private static final Path CACHE_PATH = Paths.get("datasets/cache.txt");
 	private final Properties cache;
+	private int nbOfEvaluations;
 
 	public Evaluator(Metric metric) {
 		this.metric = metric;
@@ -57,6 +58,7 @@ public class Evaluator {
 	public double evaluate(String clsfrName, DataSet data) {
 		try {
 			String key = clsfrName + "@" + data.toString();
+			nbOfEvaluations++;
 			if (cache.containsKey(key))
 				return Double.valueOf(cache.getProperty(key));
 			Instances train = new DataSource(data.train().toString())
@@ -155,5 +157,9 @@ public class Evaluator {
 
 	public static void main(String[] args) {
 		fillCache();
+	}
+
+	public int getNbOfEvaluations() {
+		return nbOfEvaluations;
 	}
 }

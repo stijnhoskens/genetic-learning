@@ -75,9 +75,13 @@ public class DataSet extends AbstractDataSet {
 		return FullDataSet.all().map(FullDataSet::evoTrain);
 	}
 
-	public static Stream<DataSet> all() {
-		return FullDataSet.all().flatMap(
-				fds -> Stream.of(fds.evoTrain(), fds.evoTest()));
+	public static Stream<DataSet> testSets() {
+		return FullDataSet.all().map(FullDataSet::evoTest);
 	}
 
+	public static Stream<DataSet> all() {
+		return Stream.concat(trainingSets(), testSets());
+	}
+
+	
 }

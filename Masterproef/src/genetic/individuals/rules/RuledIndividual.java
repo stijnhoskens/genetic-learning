@@ -11,7 +11,7 @@ import datasets.stats.Features;
 public class RuledIndividual implements Individual {
 
 	private double fitness = -1;
-	private final Set<Features> data;
+	private Set<Features> data;
 	private final RuleList rList;
 	private final Evaluator eval;
 
@@ -27,6 +27,11 @@ public class RuledIndividual implements Individual {
 		if (fitness < 0)
 			fitness = calculateFitness();
 		return fitness;
+	}
+
+	public void setData(Set<Features> data) {
+		fitness = -1;
+		this.data = data;
 	}
 
 	private double calculateFitness() {
