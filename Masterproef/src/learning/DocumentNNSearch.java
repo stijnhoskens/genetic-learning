@@ -14,18 +14,20 @@ import weka.core.Instances;
 import weka.core.RevisionUtils;
 import weka.core.neighboursearch.NearestNeighbourSearch;
 
-public class SparseNNSearch extends NearestNeighbourSearch {
+public class DocumentNNSearch extends NearestNeighbourSearch {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final double STOPWORD_THRESHOLD = 0.02;
 
 	private final MultiList<Instance> sparseInstances = new MultiList<>();
 	private double[] kDistances;
 
-	public SparseNNSearch() {
+	public DocumentNNSearch() {
 		super();
 	}
 
-	public SparseNNSearch(Instances instances) throws Exception {
+	public DocumentNNSearch(Instances instances) throws Exception {
 		super();
 		setInstances(instances);
 	}
@@ -33,9 +35,15 @@ public class SparseNNSearch extends NearestNeighbourSearch {
 	@Override
 	public void setInstances(Instances insts) throws Exception {
 		insts.forEach(this::addToSparse);
+		System.out.println(insts.size());
+		cleanSparse(insts.size());
 		m_DistanceFunction.setInstances(insts);
 		super.setInstances(insts);
 	};
+
+	private void cleanSparse(int size) {
+		sparseInstances.clean((int) (STOPWORD_THRESHOLD * size));
+	}
 
 	@Override
 	public Instance nearestNeighbour(Instance target) throws Exception {
@@ -46,19 +54,24 @@ public class SparseNNSearch extends NearestNeighbourSearch {
 	public Instances kNearestNeighbours(Instance target, int k)
 			throws Exception {
 		List<Instance> instances = sparseIndicesOf(target)
-				.mapToObj(sparseInstances::get).flatMap(Set::stream)
+				.mapToObj(sparseInstances::get).flatMap(Set::stream).distinct()
 				.collect(Collectors.toList());
+		System.out.println(instances.size());
 		List<Double> distances = instances.stream()
 				.mapToDouble(i -> m_DistanceFunction.distance(i, target))
 				.boxed().collect(Collectors.toList());
 		Instances result = new Instances(m_Instances, k);
+		kDistances = new double[k];
 		IntStream.range(0, k).forEach(i -> {
 			if (instances.isEmpty())
 				result.add(m_Instances.stream().findAny().get());
-			int index = minimumIndex(distances);
-			result.add(instances.get(index));
-			instances.remove(index);
-			distances.remove(index);
+			else {
+				int index = minimumIndex(distances);
+				result.add(instances.get(index));
+				instances.remove(index);
+				kDistances[i] = distances.get(index);
+				distances.remove(index);
+			}
 		});
 		return result;
 	}
@@ -116,6 +129,16 @@ public class SparseNNSearch extends NearestNeighbourSearch {
 			if (i >= size)
 				return Collections.emptySet();
 			return Collections.unmodifiableSet(data.get(i));
+		}
+
+		void clean(int size) {
+			for (int i = 0; i < data.size(); i++) {
+				Set<T> instances = get(i);
+				if (instances.size() > size) {
+					data.remove(i);
+					data.add(i, new HashSet<>());
+				}
+			}
 		}
 	}
 

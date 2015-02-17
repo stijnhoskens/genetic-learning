@@ -2,12 +2,10 @@ package learning;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.stream.IntStream;
 
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.lazy.IBk;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
@@ -24,14 +22,12 @@ public class KNN extends AbstractClassifier {
 
 	public static void main(String[] args) throws Exception {
 		AbstractClassifier clsfr = new IBk();
-		clsfr.setOptions(new String[] { "-K", "3" });
+		// weka.core.neighboursearch.LinearNNSearch
+		// learning.SparseNNSearch
+		clsfr.setOptions(new String[] { "-K", "3", "-A",
+				"learning.DocumentNNSearch" });
 		DataSet data = DataSet.CLASSIC_TRAIN;
 		Instances train = new DataSource(data.train().toString()).getDataSet();
-
-		Instance first = train.get(0);
-		IntStream.range(0, first.numValues()).map(i -> first.index(i))
-				.forEach(System.out::println);
-
 		train.setClassIndex(train.numAttributes() - 1);
 		LocalTime start = LocalTime.now();
 		clsfr.buildClassifier(train);
