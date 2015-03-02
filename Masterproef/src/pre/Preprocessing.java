@@ -3,6 +3,7 @@ package pre;
 import java.nio.file.Path;
 
 import pre.data.DataSplitter;
+import pre.data.SubSampler;
 import pre.data.ToArffConverter;
 import pre.models.Vocabulary;
 import pre.parsers.CoraParser;
@@ -37,6 +38,9 @@ public class Preprocessing {
 		System.out.println("splitting into evolution-specific split done");
 		ToArffConverter.convert(data);
 		System.out.println("conversion to ARFF done");
+		SubSampler.subsample(data.evoTrain());
+		SubSampler.subsample(data.evoTest());
+		System.out.println("subsampling done (if the dataset was too large)");
 		System.out.println("preprocessing done");
 
 	}

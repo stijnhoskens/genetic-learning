@@ -25,27 +25,20 @@ public class FullDataSet extends AbstractDataSet {
 	public static final FullDataSet WEBKB = new FullDataSet("datasets/webkb");
 	public static final FullDataSet WIPO = new FullDataSet("datasets/wipo");
 
-	private final DataSet EVO_TEST;
-	private final DataSet EVO_TRAIN;
-
 	public FullDataSet(String directory) {
 		super(directory);
-		EVO_TEST = new DataSet(Paths.get(directory, "evoTest"), this);
-		EVO_TRAIN = new DataSet(Paths.get(directory, "evoTrain"), this);
 	}
 
 	public FullDataSet(Path directory) {
 		super(directory);
-		EVO_TEST = new DataSet(directory.resolve("evoTest"), this);
-		EVO_TRAIN = new DataSet(directory.resolve("evoTrain"), this);
 	}
 
 	public DataSet evoTest() {
-		return EVO_TEST;
+		return new DataSet(Paths.get(directory, "evoTest"), this);
 	}
 
 	public DataSet evoTrain() {
-		return EVO_TRAIN;
+		return new DataSet(Paths.get(directory, "evoTrain"), this);
 	}
 
 	@Override
@@ -80,6 +73,6 @@ public class FullDataSet extends AbstractDataSet {
 
 	public static Stream<FullDataSet> all() {
 		return Stream.of(TWENTY_NG, CLASSIC, CORA, /* DMOZ, */MOVIES, R52,
-				RCV1, WEBKB/*, WIPO*/);
+				RCV1, WEBKB/* , WIPO */);
 	}
 }

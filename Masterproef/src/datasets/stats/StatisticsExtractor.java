@@ -4,11 +4,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.stream.Stream;
 
 import pre.data.TopicsCollector;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
+import datasets.FullDataSet;
 
 public class StatisticsExtractor {
 
@@ -55,15 +57,11 @@ public class StatisticsExtractor {
 	}
 
 	public static void main(String[] args) throws Exception {
-		DataSet.all().forEach(
-				data -> {
+		Stream.of(FullDataSet.DMOZ, FullDataSet.WIPO)
+				.flatMap(fds -> Stream.of(fds.evoTest(), fds.evoTrain()))
+				.forEach(ds -> {
 					try {
-						if (data.equals(DataSet.DMOZ_TEST)
-								|| data.equals(DataSet.DMOZ_TRAIN))
-							return;
-						extract(data).export();
-						System.out.print(data);
-						System.out.println(" exported.");
+						extract(ds).export();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -1,4 +1,4 @@
-kNN implementation 
-sub-sampling for large datasets / costly classifiers
+kNN implementation DONE
+sub-sampling for large datasets / costly classifiers DONE
 add feature: vectors needed to represent 90% of the document-space
 result analysis

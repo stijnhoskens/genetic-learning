@@ -31,7 +31,9 @@ public class DataSet extends AbstractDataSet {
 	public static final DataSet WIPO_TEST = FullDataSet.WIPO.evoTest();
 
 	private static final String TEST = "test.arff";
+	private static final String FULL_TEST = "test_full.arff";
 	private static final String TRAIN = "train.arff";
+	private static final String FULL_TRAIN = "train_full.arff";
 	private static final String STATS = "stats.txt";
 	private static final String TEST_EXPLICIT = "test_explicit.txt";
 	private static final String TRAIN_EXPLICIT = "train_explicit.txt";
@@ -53,14 +55,24 @@ public class DataSet extends AbstractDataSet {
 		return Paths.get(directory, TEST);
 	}
 
-	public Instances testInstances() throws Exception {
+	public Path fullTest() {
+		return Paths.get(directory, FULL_TEST);
+	}
+
+	public Instances testInstances() {
 		return instances(test());
 	}
 
-	private static Instances instances(Path path) throws Exception {
-		Instances i = new DataSource(path.toString()).getDataSet();
-		i.setClassIndex(i.numAttributes() - 1);
-		return i;
+	private static Instances instances(Path path) {
+		Instances i;
+		try {
+			i = new DataSource(path.toString()).getDataSet();
+			i.setClassIndex(i.numAttributes() - 1);
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -68,7 +80,11 @@ public class DataSet extends AbstractDataSet {
 		return Paths.get(directory, TRAIN);
 	}
 
-	public Instances trainInstances() throws Exception {
+	public Path fullTrain() {
+		return Paths.get(directory, FULL_TRAIN);
+	}
+
+	public Instances trainInstances() {
 		return instances(train());
 	}
 
