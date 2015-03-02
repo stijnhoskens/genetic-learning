@@ -18,9 +18,11 @@ public class DocumentNNSearch extends NearestNeighbourSearch {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final double STOPWORD_THRESHOLD = 0.02;
+	private static final double DOCFREQ_UPPERLIMIT = 0.003;
+	private static final int DOCFREQ_LOWERLIMIT = 1;
 
 	private final MultiList<Instance> sparseInstances = new MultiList<>();
+	private int nbOfInstances;
 	private double[] kDistances;
 
 	public DocumentNNSearch() {
@@ -35,14 +37,14 @@ public class DocumentNNSearch extends NearestNeighbourSearch {
 	@Override
 	public void setInstances(Instances insts) throws Exception {
 		insts.forEach(this::addToSparse);
-		System.out.println(insts.size());
-		cleanSparse(insts.size());
+		nbOfInstances = insts.size();
+		cleanSparse();
 		m_DistanceFunction.setInstances(insts);
 		super.setInstances(insts);
 	};
 
-	private void cleanSparse(int size) {
-		sparseInstances.clean((int) (STOPWORD_THRESHOLD * size));
+	private void cleanSparse() {
+		sparseInstances.clean();
 	}
 
 	@Override
@@ -56,13 +58,12 @@ public class DocumentNNSearch extends NearestNeighbourSearch {
 		List<Instance> instances = sparseIndicesOf(target)
 				.mapToObj(sparseInstances::get).flatMap(Set::stream).distinct()
 				.collect(Collectors.toList());
-		System.out.println(instances.size());
 		List<Double> distances = instances.stream()
 				.mapToDouble(i -> m_DistanceFunction.distance(i, target))
 				.boxed().collect(Collectors.toList());
 		Instances result = new Instances(m_Instances, k);
 		kDistances = new double[k];
-		IntStream.range(0, k).forEach(i -> {
+		for (int i = 0; i < k; i++) {
 			if (instances.isEmpty())
 				result.add(m_Instances.stream().findAny().get());
 			else {
@@ -72,7 +73,7 @@ public class DocumentNNSearch extends NearestNeighbourSearch {
 				kDistances[i] = distances.get(index);
 				distances.remove(index);
 			}
-		});
+		}
 		return result;
 	}
 
@@ -131,13 +132,15 @@ public class DocumentNNSearch extends NearestNeighbourSearch {
 			return Collections.unmodifiableSet(data.get(i));
 		}
 
-		void clean(int size) {
+		void clean() {
+			int upperlimit = (int) (DOCFREQ_UPPERLIMIT * nbOfInstances);
+			if (upperlimit <= DOCFREQ_LOWERLIMIT)
+				return;
 			for (int i = 0; i < data.size(); i++) {
 				Set<T> instances = get(i);
-				if (instances.size() > size) {
-					data.remove(i);
-					data.add(i, new HashSet<>());
-				}
+				if (instances.size() > upperlimit
+						|| instances.size() <= DOCFREQ_LOWERLIMIT)
+					data.get(i).clear();
 			}
 		}
 	}

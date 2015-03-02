@@ -21,9 +21,9 @@ public class KNN extends AbstractClassifier {
 	}
 
 	public static void main(String[] args) throws Exception {
-		AbstractClassifier clsfr = new IBk();
+		IBk clsfr = new IBk();
 		// weka.core.neighboursearch.LinearNNSearch
-		// learning.SparseNNSearch
+		// learning.DocumentNNSearch
 		clsfr.setOptions(new String[] { "-K", "3", "-A",
 				"learning.DocumentNNSearch" });
 		DataSet data = DataSet.CLASSIC_TRAIN;

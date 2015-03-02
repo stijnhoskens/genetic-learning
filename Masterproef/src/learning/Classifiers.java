@@ -14,6 +14,7 @@ import java.util.stream.Stream.Builder;
 import util.Joiner;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 public class Classifiers {
 
@@ -40,11 +41,25 @@ public class Classifiers {
 		return clsfr;
 	}
 
+	public static Classifier trained(String name, Instances train)
+			throws Exception {
+		Classifier c = get(name);
+		c.buildClassifier(train);
+		return c;
+	}
+
 	private static AbstractClassifier getClassifier(String name) {
 		try {
-			return (AbstractClassifier) Class.forName(
-					Config.CLASSIFIERS.getProperty(name).split(" ")[0])
-					.newInstance();
+			String[] tokens = Config.CLASSIFIERS.getProperty(name).split(" ");
+			AbstractClassifier clsfr = (AbstractClassifier) Class.forName(
+					tokens[0]).newInstance();
+			String[] fixedOptions = Arrays.stream(tokens)
+					.filter(s -> s.startsWith("(FIXED)"))
+					.map(s -> s.replace("(FIXED)", "")).map(Parameter::new)
+					.map(p -> p.toString(0)).map(s -> s.split(" "))
+					.flatMap(Arrays::stream).toArray(String[]::new);
+			clsfr.setOptions(fixedOptions);
+			return clsfr;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -68,7 +83,9 @@ public class Classifiers {
 
 	public static List<Parameter> getParametersOf(String name) {
 		String[] splitted = Config.CLASSIFIERS.getProperty(name).split(" ");
-		String[] parameters = Arrays.copyOfRange(splitted, 1, splitted.length);
+		String[] parameters = Arrays
+				.stream(Arrays.copyOfRange(splitted, 1, splitted.length))
+				.filter(s -> !s.startsWith("(FIXED)")).toArray(String[]::new);
 		return Arrays.stream(parameters).map(Parameter::new)
 				.sorted((p1, p2) -> p1.toString().compareTo(p2.toString()))
 				.collect(Collectors.toList());

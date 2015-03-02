@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
 public class DataSet extends AbstractDataSet {
 
 	public static final DataSet TWENTY_NG_TRAIN = FullDataSet.TWENTY_NG
@@ -50,9 +53,23 @@ public class DataSet extends AbstractDataSet {
 		return Paths.get(directory, TEST);
 	}
 
+	public Instances testInstances() throws Exception {
+		return instances(test());
+	}
+
+	private static Instances instances(Path path) throws Exception {
+		Instances i = new DataSource(path.toString()).getDataSet();
+		i.setClassIndex(i.numAttributes() - 1);
+		return i;
+	}
+
 	@Override
 	public Path train() {
 		return Paths.get(directory, TRAIN);
+	}
+
+	public Instances trainInstances() throws Exception {
+		return instances(train());
 	}
 
 	public Path stats() {
@@ -83,5 +100,4 @@ public class DataSet extends AbstractDataSet {
 		return Stream.concat(trainingSets(), testSets());
 	}
 
-	
 }

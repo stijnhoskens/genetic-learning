@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -18,7 +20,6 @@ import util.Joiner;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 import datasets.DataSet;
 import datasets.stats.Features;
 
@@ -61,14 +62,9 @@ public class Evaluator {
 			nbOfEvaluations++;
 			if (cache.containsKey(key))
 				return Double.valueOf(cache.getProperty(key));
-			Instances train = new DataSource(data.train().toString())
-					.getDataSet();
-			train.setClassIndex(train.numAttributes() - 1);
-			Classifier classifier = Classifiers.get(clsfrName);
-			classifier.buildClassifier(train);
-			Instances test = new DataSource(data.test().toString())
-					.getDataSet();
-			test.setClassIndex(test.numAttributes() - 1);
+			Instances train = data.trainInstances();
+			Classifier classifier = Classifiers.trained(clsfrName, train);
+			Instances test = data.testInstances();
 			Evaluation eval = new Evaluation(train);
 			eval.evaluateModel(classifier, test);
 			double evaluation = metric.value(eval);
@@ -100,11 +96,11 @@ public class Evaluator {
 	}
 
 	private double evaluate(Features f, String c) {
-		// System.out.println("Evaluating "+c+" on "+f.getDataSet()+".");
-		// LocalTime start = LocalTime.now();
+		System.out.println("Evaluating " + c + " on " + f.getDataSet() + ".");
+		LocalTime start = LocalTime.now();
 		double evaluation = evaluate(c, f.getDataSet());
-		// long seconds = Duration.between(start, LocalTime.now()).getSeconds();
-		// System.out.println("Elapsed time: "+seconds+".");
+		long seconds = Duration.between(start, LocalTime.now()).getSeconds();
+		System.out.println("Elapsed time: " + seconds + ".");
 		return evaluation;
 	}
 
