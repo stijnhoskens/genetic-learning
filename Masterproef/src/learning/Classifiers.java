@@ -112,6 +112,6 @@ public class Classifiers {
 	}
 
 	public static void main(String[] args) throws Exception {
-		allOptions().forEach(System.out::println);
+		System.out.println(allOptions().count());
 	}
 }

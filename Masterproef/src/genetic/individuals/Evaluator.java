@@ -104,11 +104,11 @@ public class Evaluator {
 		return evaluation;
 	}
 
-	protected static void fillCache() {
+	protected static void fillCache(int threadpoolSize) {
 		Set<Features> features = DataSet.all().map(Features::load)
 				.collect(Collectors.toSet());
 		Evaluator eval = new Evaluator();
-		ExecutorService threadpool = Executors.newFixedThreadPool(2);
+		ExecutorService threadpool = Executors.newFixedThreadPool(threadpoolSize);
 		features.forEach(f -> Classifiers.allOptions().forEach(
 				s -> threadpool.execute(() -> eval.evaluate(f, s))));
 	}
@@ -152,7 +152,7 @@ public class Evaluator {
 	}
 
 	public static void main(String[] args) {
-		fillCache();
+		fillCache(2);
 	}
 
 	public int getNbOfEvaluations() {
