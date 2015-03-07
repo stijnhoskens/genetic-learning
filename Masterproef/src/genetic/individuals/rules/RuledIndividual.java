@@ -34,7 +34,8 @@ public class RuledIndividual implements Individual {
 		this.data = data;
 	}
 
-	private double calculateFitness() {
+	public double calculateFitness() {
+		rList.resetApplicableData();
 		double evaluation = eval.evaluate(rList, data);
 		rList.removeUnusedRules();
 		return evaluation;

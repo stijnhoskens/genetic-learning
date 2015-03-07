@@ -3,11 +3,12 @@ package genetic.individuals.rules;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import util.Joiner;
 import datasets.stats.Features;
 
-public class RuleList implements Function<Features, String> {
+public class RuleList implements Function<Features, Rule> {
 
 	private final List<Rule> rules;
 	private final Rule _else;
@@ -33,11 +34,9 @@ public class RuleList implements Function<Features, String> {
 	}
 
 	@Override
-	public String apply(Features features) {
-		for (Rule rule : rules)
-			if (rule.test(features))
-				return rule.get();
-		return _else.get();
+	public Rule apply(Features features) {
+		return rules.stream().filter(r -> r.test(features)).findFirst()
+				.orElse(_else);
 	}
 
 	void removeUnusedRules() {
@@ -56,7 +55,12 @@ public class RuleList implements Function<Features, String> {
 	public String toString() {
 		if (rules.size() == 0)
 			return _else.get();
-		return Joiner.join(rules.stream().map(Rule::toString), "\n")
-				+ "\nELSE " + _else.get();
+		return Joiner.join(
+				Stream.concat(rules.stream(), Stream.of(_else)).map(
+						Rule::toString), "\n");
+	}
+
+	public void resetApplicableData() {
+		rules.forEach(Rule::clearApplicableData);
 	}
 }

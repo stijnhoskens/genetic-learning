@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import datasets.stats.Features;
 
@@ -17,7 +18,6 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 
 	private double score = 0;
 	private Set<Features> alreadyPassed = new HashSet<>();
-	private boolean isUsed = false;
 
 	public Rule(Condition condition, String action) {
 		cond = condition;
@@ -31,7 +31,6 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 
 	@Override
 	public String get() {
-		isUsed  = true;
 		return act;
 	}
 
@@ -64,14 +63,23 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 	public Rule withNewAction(String action) {
 		return new Rule(cond, action);
 	}
-	
+
 	public boolean isUsed() {
-		return isUsed;
+		return !alreadyPassed.isEmpty();
+	}
+
+	public void clearApplicableData() {
+		alreadyPassed.clear();
 	}
 
 	@Override
 	public String toString() {
-		return "IF " + cond.toString() + " THEN " + act;
+		String prefix = cond.equals(Condition.ELSE) ? "ELSE " : "IF "
+				+ cond.toString() + " THEN ";
+		return prefix
+				+ act
+				+ " "
+				+ getApplicableData().stream().map(Features::getDataSet)
+						.collect(Collectors.toSet());
 	}
-
 }
