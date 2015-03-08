@@ -1,0 +1,4 @@
+course
+faculty
+project
+student

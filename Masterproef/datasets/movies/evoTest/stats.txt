@@ -1,0 +1,7 @@
+nbOfDocs 704.0
+nbOfTopics 2.0
+dptStd 12.727922061357855
+dptEntr 1.0
+wpdAvg 281.265625
+wpdStd 120.21129647845619
+wpdEntr 8.114404253865539
