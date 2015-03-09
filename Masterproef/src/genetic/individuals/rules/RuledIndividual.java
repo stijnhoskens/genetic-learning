@@ -10,7 +10,7 @@ import datasets.stats.Features;
 
 public class RuledIndividual implements Individual {
 
-	private double fitness = -1;
+	private double fitness;
 	private Set<Features> data;
 	private final RuleList rList;
 	private final Evaluator eval;
@@ -20,6 +20,7 @@ public class RuledIndividual implements Individual {
 		data = datasets;
 		rList = rules;
 		eval = evaluator;
+		fitness = -1;
 	}
 
 	@Override
@@ -34,10 +35,16 @@ public class RuledIndividual implements Individual {
 		this.data = data;
 	}
 
-	public double calculateFitness() {
+	private double calculateFitness() {
 		rList.resetApplicableData();
-		double evaluation = eval.evaluate(rList, data);
-		rList.removeUnusedRules();
+		double evaluation = data.stream()
+				.mapToDouble(f -> rList.apply(f).evaluate(f, eval)).average()
+				.orElse(0);
+		rList.removeUnusedRulesAndDuplicates();
+		long count = rList.asList().stream()
+				.flatMap(r -> r.getApplicableData().stream()).count();
+		if (count > 9)
+			System.out.println("Bug detected!");
 		return evaluation;
 	}
 

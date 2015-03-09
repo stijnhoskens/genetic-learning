@@ -59,12 +59,11 @@ public class Main {
 		RuledIndividual best = genetic
 				.apply(() -> genetic.getNbOfIterations() >= 300);
 		System.out.println(best);
-		best.calculateFitness();
-		System.out.println(best);
 		// double[] data = genetic.getStatProgress().stream()
 		// .mapToDouble(DoubleSummaryStatistics::getMax).toArray();
 		best.setData(test);
 		System.out.println("Testing fitness: " + best.fitness());
+		System.out.println(best);
 		// LineGraph.plot(data);
 	}
 

@@ -1,7 +1,5 @@
 package genetic.individuals;
 
-import genetic.individuals.rules.RuleList;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -95,11 +93,6 @@ public class Evaluator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public double evaluate(RuleList rList, Set<Features> data) {
-		return data.stream().mapToDouble(f -> rList.apply(f).evaluate(f, this))
-				.average().orElse(0);
 	}
 
 	private double evaluate(Features f, String c) {

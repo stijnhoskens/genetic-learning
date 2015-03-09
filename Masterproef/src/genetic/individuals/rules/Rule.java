@@ -80,6 +80,6 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 				+ act
 				+ " "
 				+ getApplicableData().stream().map(Features::getDataSet)
-						.collect(Collectors.toSet());
+						.collect(Collectors.toList());
 	}
 }

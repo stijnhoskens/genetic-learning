@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Stream;
 
 import util.Pair;
 
@@ -35,15 +37,21 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	private CrossoverStrategy<T> crossover;
 
 	/*
+	 * Termination criterium
+	 */
+	private BooleanSupplier termination;
+
+	/*
 	 * These fields will change after every iteration of the algorithm itself
 	 */
 	protected Population<T> population;
 	private int nbOfIterations;
 	private long startTime;
-	private final List<Individual> progress = new ArrayList<>();
+	private final List<T> progress = new ArrayList<>();
 	private final List<DoubleSummaryStatistics> statProgress = new ArrayList<>();
 
 	private final Random r = new Random();
+	private Runnable afterEachRun;
 
 	public GeneticAlgorithm(double mutationP, double crossoverP,
 			int populationSize, double elite) {
@@ -51,6 +59,10 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 		coProb = crossoverP;
 		popSize = populationSize;
 		elitist = elite;
+	}
+
+	public GeneticAlgorithm(GeneticConfiguration config) {
+		this(config.mProb, config.coProb, config.popSize, config.elitist);
 	}
 
 	public T apply(BooleanSupplier termination) {
@@ -64,8 +76,17 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 			population.replaceWith(selected);
 			paperWork();
 			problemSpecific();
+			if (afterEachRun != null)
+				afterEachRun.run();
 		}
 		return population.bestIndividual();
+	}
+
+	public T apply() {
+		if (termination == null)
+			throw new IllegalStateException("Termination criterium not set. "
+					+ "Specify one or use the apply(BooleanSupplier) method.");
+		return apply(termination);
 	}
 
 	protected Population<T> initializePopulation() {
@@ -122,6 +143,10 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 
 	protected abstract void problemSpecific();
 
+	public void afterEachRun(Runnable doThis) {
+		afterEachRun = doThis;
+	}
+
 	public void setIndividualGenerator(IndividualGenerator<T> supplier) {
 		init = supplier;
 	}
@@ -136,6 +161,10 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 
 	public void setCrossoverStrategy(CrossoverStrategy<T> strategy) {
 		crossover = strategy;
+	}
+
+	public void setTerminationCriterium(BooleanSupplier supplier) {
+		termination = supplier;
 	}
 
 	/**
@@ -158,8 +187,16 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 	 * the fittest individual in that iteration. This means there are as much
 	 * entries in this list as there have been iterations.
 	 */
-	public synchronized List<Individual> getProgress() {
+	public synchronized List<T> getProgress() {
 		return Collections.unmodifiableList(progress);
+	}
+
+	/**
+	 * Returns the best so far individual. ( == the last element in
+	 * getProgress).
+	 */
+	public synchronized T bestSoFar() {
+		return progress.get(progress.size() - 1);
 	}
 
 	public synchronized List<DoubleSummaryStatistics> getStatProgress() {
@@ -176,11 +213,15 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 		updateProgress();
 	}
 
-	private void initialize() {
+	private void initialize() throws RuntimeException {
 		problemSpecificInitialisation();
 		startTime = System.currentTimeMillis();
 		population = initializePopulation();
 		nbOfIterations = 0;
+		if (Stream.of(init, selection, crossover, mutation).anyMatch(
+				Objects::isNull))
+			throw new IllegalStateException(
+					"One or more of the genetic operator is not set.");
 	}
 
 	private void updateProgress() {

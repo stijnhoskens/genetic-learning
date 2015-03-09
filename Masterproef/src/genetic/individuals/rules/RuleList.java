@@ -11,7 +11,7 @@ import datasets.stats.Features;
 public class RuleList implements Function<Features, Rule> {
 
 	private final List<Rule> rules;
-	private final Rule _else;
+	private Rule _else;
 
 	public RuleList(List<Rule> rules, String _else) {
 		this.rules = new ArrayList<>(rules);
@@ -34,15 +34,25 @@ public class RuleList implements Function<Features, Rule> {
 	}
 
 	@Override
-	public Rule apply(Features features) {
-		return rules.stream().filter(r -> r.test(features)).findFirst()
-				.orElse(_else);
+	public synchronized Rule apply(Features features) {
+		for (Rule r : rules)
+			if (r.test(features))
+				return r;
+		return _else;
 	}
 
-	void removeUnusedRules() {
+	void removeUnusedRulesAndDuplicates() {
 		List<Rule> copy = new ArrayList<>(rules);
 		rules.clear();
-		copy.stream().filter(Rule::isUsed).forEach(rules::add);
+		copy.stream().filter(Rule::isUsed).forEach(r -> {
+			if (!rules.contains(r))
+				rules.add(r);
+		});
+		if (!_else.isUsed()) {
+			int lastIndex = rules.size() - 1;
+			_else = rules.get(lastIndex);
+			rules.remove(lastIndex);
+		}
 	}
 
 	public List<Rule> asList() {
@@ -62,5 +72,6 @@ public class RuleList implements Function<Features, Rule> {
 
 	public void resetApplicableData() {
 		rules.forEach(Rule::clearApplicableData);
+		_else.clearApplicableData();
 	}
 }

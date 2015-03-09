@@ -9,6 +9,10 @@ public class GeneticAdapter<T extends Individual> extends GeneticAlgorithm<T> {
 		super(mutationP, crossoverP, populationSize, elitist);
 	}
 
+	public GeneticAdapter(GeneticConfiguration config) {
+		super(config);
+	}
+
 	@Override
 	protected void problemSpecificInitialisation() {
 		// do nothing
