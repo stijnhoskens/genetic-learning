@@ -10,7 +10,6 @@ import genetic.init.RandomGenerator;
 import genetic.mutation.Mutator;
 import genetic.selection.Selection;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,13 +19,11 @@ import datasets.stats.Features;
 public class Analyzer {
 
 	public static void main(String[] args) {
-		System.out.println(new Analyzer().bestDuringRun());
-	}
-
-	public Set<RuledIndividual> bestDuringRun() {
-		GeneticAlgorithm<RuledIndividual> algo = defaultSettings();
-		algo.apply();
-		return new HashSet<>(algo.getProgress());
+		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
+		MultipleRunExtractor extractor = new MultipleRunExtractor(ga);
+		extractor.run(20);
+		System.out.println(extractor.classifierBag());
+		System.out.println(extractor.featureBag());
 	}
 
 	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {

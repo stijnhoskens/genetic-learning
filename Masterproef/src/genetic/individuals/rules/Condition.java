@@ -39,6 +39,10 @@ public class Condition implements Predicate<Features> {
 		ranges = Collections.emptySet();
 	}
 
+	public Collection<RangeCheck> getRanges() {
+		return Collections.unmodifiableCollection(ranges);
+	}
+
 	@Override
 	public boolean test(Features features) {
 		return ranges.stream().allMatch(r -> r.test(features));

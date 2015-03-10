@@ -34,6 +34,10 @@ public class Rule implements Predicate<Features>, Supplier<String> {
 		return act;
 	}
 
+	public Condition getCondition() {
+		return new Condition(cond.getRanges());
+	}
+
 	public double evaluate(Features features, Evaluator evaluator) {
 		double evaluation = evaluator.evaluate(get(), features.getDataSet());
 		if (!alreadyPassed.contains(features)) {

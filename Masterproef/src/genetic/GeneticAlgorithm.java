@@ -218,6 +218,8 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 		startTime = System.currentTimeMillis();
 		population = initializePopulation();
 		nbOfIterations = 0;
+		progress.clear();
+		statProgress.clear();
 		if (Stream.of(init, selection, crossover, mutation).anyMatch(
 				Objects::isNull))
 			throw new IllegalStateException(
