@@ -45,7 +45,8 @@ public class Bag<T> {
 		return Collector.of(Bag::new, (b, t) -> b.add(t), (b1, b2) -> {
 			b1.addAll(b2);
 			return b1;
-		}, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED);
+		}, Characteristics.IDENTITY_FINISH, Characteristics.UNORDERED,
+				Characteristics.CONCURRENT);
 	}
 
 	public Bag<T> unmodifiable() {
@@ -57,6 +58,11 @@ public class Bag<T> {
 
 			@Override
 			public void addAll(Bag<T> bag) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			public void clear() {
 				throw new UnsupportedOperationException();
 			}
 		};

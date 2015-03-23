@@ -21,9 +21,10 @@ public class Analyzer {
 	public static void main(String[] args) {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 		MultipleRunExtractor extractor = new MultipleRunExtractor(ga);
-		extractor.run(20);
+		extractor.run(10);
 		System.out.println(extractor.classifierBag());
 		System.out.println(extractor.featureBag());
+		System.out.println(extractor.nbOfRulesBag());
 	}
 
 	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {

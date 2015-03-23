@@ -4,10 +4,12 @@ import genetic.GeneticAlgorithm;
 import genetic.individuals.RangeCheck;
 import genetic.individuals.rules.Condition;
 import genetic.individuals.rules.Rule;
+import genetic.individuals.rules.RuleList;
 import genetic.individuals.rules.RuledIndividual;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -45,5 +47,10 @@ public class Extractor {
 
 	public Bag<String> classifiersDuringRun() {
 		return rulesDuringRun().map(Rule::get).collect(Bag.collector());
+	}
+
+	public Bag<Integer> nbOfRulesDuringRun() {
+		return bestDuringRun().stream().map(RuledIndividual::getRules)
+				.map(RuleList::asList).map(List::size).collect(Bag.collector());
 	}
 }

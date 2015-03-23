@@ -1,6 +1,7 @@
 package analysis;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import util.Bag;
 import genetic.GeneticAlgorithm;
@@ -25,13 +26,13 @@ public class MultipleRunExtractor {
 	}
 
 	private void resetResults() {
-		features.clear();
-		classifiers.clear();
+		Stream.of(features, classifiers, nbOfRules).forEach(Bag::clear);
 	}
 
 	private void acceptNewResult() {
 		features.addAll(extractor.featuresDuringRun());
 		classifiers.addAll(extractor.classifiersDuringRun());
+		nbOfRules.addAll(extractor.nbOfRulesDuringRun());
 	}
 
 	private final Bag<Integer> features = new Bag<>();
@@ -44,6 +45,12 @@ public class MultipleRunExtractor {
 
 	public Bag<String> classifierBag() {
 		return classifiers.unmodifiable();
+	}
+
+	private final Bag<Integer> nbOfRules = new Bag<>();
+
+	public Bag<Integer> nbOfRulesBag() {
+		return nbOfRules.unmodifiable();
 	}
 
 }
