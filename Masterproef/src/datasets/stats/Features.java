@@ -29,6 +29,11 @@ public class Features {
 	 * WORDS-PER-DOC SPECIFIC
 	 */
 	double wpdAvg, wpdStd, wpdEntr;
+	
+	/*
+	 * RELATED TO PCA
+	 */
+	double pca;
 
 	Features(DataSet data) {
 		this.data = data;
@@ -56,6 +61,10 @@ public class Features {
 
 	public double getWPDEntr() {
 		return wpdEntr;
+	}
+	
+	public double getPCA() {
+		return pca;
 	}
 
 	public double getEntry(int i) {

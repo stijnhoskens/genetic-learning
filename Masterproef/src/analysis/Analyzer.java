@@ -24,7 +24,7 @@ public class Analyzer {
 		Extractor extractor = new Extractor(ga);
 		BagStatistics<String> classifiers = new BagStatistics<>();
 		BagStatistics<Integer> features = new BagStatistics<>(), nbOfRules = new BagStatistics<>();
-		IntStream.range(0, 100).forEach(i -> {
+		IntStream.range(0, 200).forEach(i -> {
 			ga.apply();
 			classifiers.accept(extractor.classifiersDuringRun());
 			features.accept(extractor.featuresDuringRun());
