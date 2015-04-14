@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collector;
@@ -30,6 +31,10 @@ public class Bag<T> {
 
 	public int count(T t) {
 		return map.getOrDefault(t, 0);
+	}
+
+	public Stream<T> keys() {
+		return map.keySet().stream();
 	}
 
 	public Stream<T> stream() {
@@ -70,7 +75,8 @@ public class Bag<T> {
 
 	@Override
 	public String toString() {
-		return map.keySet().stream().map(k -> k.toString() + ": " + map.get(k))
+		return keys().sorted(Comparator.comparingInt(this::count).reversed())
+				.map(k -> k.toString() + ": " + map.get(k))
 				.collect(Collectors.joining("\n", "[", "]"));
 	}
 

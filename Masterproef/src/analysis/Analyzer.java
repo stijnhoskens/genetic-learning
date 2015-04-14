@@ -12,6 +12,7 @@ import genetic.selection.Selection;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import datasets.DataSet;
 import datasets.stats.Features;
@@ -20,11 +21,18 @@ public class Analyzer {
 
 	public static void main(String[] args) {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
-		MultipleRunExtractor extractor = new MultipleRunExtractor(ga);
-		extractor.run(10);
-		System.out.println(extractor.classifierBag());
-		System.out.println(extractor.featureBag());
-		System.out.println(extractor.nbOfRulesBag());
+		Extractor extractor = new Extractor(ga);
+		BagStatistics<String> classifiers = new BagStatistics<>();
+		BagStatistics<Integer> features = new BagStatistics<>(), nbOfRules = new BagStatistics<>();
+		IntStream.range(0, 100).forEach(i -> {
+			ga.apply();
+			classifiers.accept(extractor.classifiersDuringRun());
+			features.accept(extractor.featuresDuringRun());
+			nbOfRules.accept(extractor.nbOfRulesDuringRun());
+		});
+		System.out.println(classifiers);
+		System.out.println(features);
+		System.out.println(nbOfRules);
 	}
 
 	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {

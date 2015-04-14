@@ -21,6 +21,10 @@ public class IntDistribution {
 	public IntSummaryStatistics frequencyStats() {
 		return asStream().summaryStatistics();
 	}
+	
+	public double average() {
+		return frequencyStats().getAverage();
+	}
 
 	public double variance() {
 		return momentAboutMean(2);
