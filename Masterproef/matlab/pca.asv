@@ -1,0 +1,20 @@
+datasets = {'20ng';'classic';'cora';'dmoz';'movies'; ...
+    'r52';'rcv1';'webkb';'wipo'};
+trorte = 'evoTrain';
+trorte2 = 'test';
+threshold = 0.8;
+for i = 1:1 %size(datasets)
+    datasets(i)
+    A = getTDMatrix(datasets(i), trorte, trorte2);
+
+    elements = nonzeros(A);
+    sumofsquares = sqrt(sum(elements.^2));
+    
+    n = 1;
+    for j = 1:20
+        s = svds(A,n);
+        ratio = sqrt(sum(s.^2))/sumofsquares;
+        if ratio > threshold
+        n = n+5;
+    end
+end
