@@ -5,21 +5,51 @@ import genetic.GeneticAlgorithm;
 import genetic.GeneticConfiguration;
 import genetic.crossover.Crossover;
 import genetic.individuals.Evaluator;
+import genetic.individuals.RangeCheck;
+import genetic.individuals.rules.Condition;
+import genetic.individuals.rules.Rule;
 import genetic.individuals.rules.RuledIndividual;
 import genetic.init.RandomGenerator;
 import genetic.mutation.Mutator;
 import genetic.selection.Selection;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import util.Bag;
 import datasets.DataSet;
 import datasets.stats.Features;
 
 public class Analyzer {
 
 	public static void main(String[] args) {
+		analyzeFinalSolutions();
+	}
+
+	public static void analyzeFinalSolutions() {
+		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
+		Bag<String> classifiers = new Bag<>();
+		Bag<Integer> features = new Bag<>(), nbOfRules = new Bag<>();
+		IntStream.range(0, 100).forEach(
+				i -> {
+					RuledIndividual best = ga.apply();
+					best.getRules().asList().stream().map(Rule::get)
+							.forEach(classifiers::add);
+					best.getRules().asList().stream().map(Rule::getCondition)
+							.map(Condition::getRanges)
+							.flatMap(Collection::stream)
+							.mapToInt(RangeCheck::getIndex).boxed()
+							.forEach(features::add);
+					nbOfRules.add(best.getRules().asList().size());
+				});
+		System.out.println(classifiers);
+		System.out.println(features);
+		System.out.println(nbOfRules);
+	}
+
+	public static void analyzeAllBestSolutions() {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 		Extractor extractor = new Extractor(ga);
 		BagStatistics<String> classifiers = new BagStatistics<>();

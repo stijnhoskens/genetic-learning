@@ -13,6 +13,14 @@ public class DoubleDistribution {
 	public DoubleDistribution(double[] distribution) {
 		this.distribution = Arrays.copyOf(distribution, distribution.length);
 	}
+	
+	public double get(int i) {
+		return distribution[i];
+	}
+	
+	public int size() {
+		return distribution.length;
+	}
 
 	public DoubleStream asStream() {
 		return Arrays.stream(distribution);
@@ -20,6 +28,10 @@ public class DoubleDistribution {
 
 	public DoubleSummaryStatistics frequencyStats() {
 		return asStream().summaryStatistics();
+	}
+
+	public double average() {
+		return frequencyStats().getAverage();
 	}
 
 	public double variance() {

@@ -14,6 +14,14 @@ public class IntDistribution {
 		this.distribution = Arrays.copyOf(distribution, distribution.length);
 	}
 
+	public int get(int i) {
+		return distribution[i];
+	}
+
+	public int size() {
+		return distribution.length;
+	}
+
 	public IntStream asStream() {
 		return Arrays.stream(distribution);
 	}
@@ -21,7 +29,7 @@ public class IntDistribution {
 	public IntSummaryStatistics frequencyStats() {
 		return asStream().summaryStatistics();
 	}
-	
+
 	public double average() {
 		return frequencyStats().getAverage();
 	}
@@ -50,6 +58,14 @@ public class IntDistribution {
 			result -= frequency * (Math.log(frequency) / Math.log(2));
 		}
 		return result;
+	}
+
+	public DoubleDistribution normalize(int[] totals) {
+		return new DoubleDistribution(IntStream
+				.range(0, distribution.length)
+				.mapToDouble(
+						i -> ((double) distribution[i]) / ((double) totals[i]))
+				.toArray());
 	}
 
 	private double momentAboutMean(int k) {
