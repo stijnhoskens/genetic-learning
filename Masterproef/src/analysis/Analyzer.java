@@ -14,18 +14,43 @@ import genetic.mutation.Mutator;
 import genetic.selection.Selection;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import util.Bag;
+import util.Pair;
 import datasets.DataSet;
 import datasets.stats.Features;
 
 public class Analyzer {
 
 	public static void main(String[] args) {
-		analyzeFinalSolutions();
+		analyzeIndexClassifierCorrelation();
+	}
+
+	public static void analyzeIndexClassifierCorrelation() {
+		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
+		Bag<Pair<Set<Integer>, String>> corr = new Bag<>();
+		IntStream
+				.range(0, 100)
+				.forEach(
+						i -> {
+							ga.apply();
+							Set<RuledIndividual> best = new HashSet<>(ga
+									.getProgress());
+							best.forEach(ri -> ri
+									.getRules()
+									.asList()
+									.forEach(
+											r -> corr
+													.add(new Pair<Set<Integer>, String>(
+															r.getCondition()
+																	.getCheckedIndices(),
+															r.get()))));
+						});
+		System.out.println(corr);
 	}
 
 	public static void analyzeFinalSolutions() {
