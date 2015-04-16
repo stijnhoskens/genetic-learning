@@ -27,16 +27,20 @@ import datasets.stats.Features;
 public class Analyzer {
 
 	public static void main(String[] args) {
-		analyzeIndexClassifierCorrelation();
+		analyzeFinalSolutions();
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 		Bag<Pair<Set<Integer>, String>> corr = new Bag<>();
+		int n = 100;
 		IntStream
-				.range(0, 100)
+				.range(0, n)
 				.forEach(
 						i -> {
+							if (i % 50 == 0)
+								System.out.println((i * 100) / n
+										+ "% complete.");
 							ga.apply();
 							Set<RuledIndividual> best = new HashSet<>(ga
 									.getProgress());
@@ -57,8 +61,11 @@ public class Analyzer {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 		Bag<String> classifiers = new Bag<>();
 		Bag<Integer> features = new Bag<>(), nbOfRules = new Bag<>();
-		IntStream.range(0, 100).forEach(
+		int n = 500;
+		IntStream.range(0, n).forEach(
 				i -> {
+					if (i % 50 == 0)
+						System.out.println((i * 100) / n + "% complete.");
 					RuledIndividual best = ga.apply();
 					best.getRules().asList().stream().map(Rule::get)
 							.forEach(classifiers::add);
