@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import util.Pair;
@@ -52,6 +53,7 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 
 	private final Random r = new Random();
 	private Runnable afterEachRun;
+	private Consumer<Population<T>> consumer;
 
 	public GeneticAlgorithm(double mutationP, double crossoverP,
 			int populationSize, double elite) {
@@ -78,6 +80,8 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 			problemSpecific();
 			if (afterEachRun != null)
 				afterEachRun.run();
+			if (consumer != null)
+				consumer.accept(population);
 		}
 		return population.bestIndividual();
 	}
@@ -201,6 +205,10 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 
 	public synchronized List<DoubleSummaryStatistics> getStatProgress() {
 		return Collections.unmodifiableList(statProgress);
+	}
+
+	public void setPopulationConsumer(Consumer<Population<T>> consumer) {
+		this.consumer = consumer;
 	}
 
 	private List<T> elites() {
