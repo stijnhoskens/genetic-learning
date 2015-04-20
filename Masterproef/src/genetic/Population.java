@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import datasets.stats.DoubleDistribution;
 import util.Joiner;
 import exceptions.PopulationSizeException;
 import genetic.individuals.Individual;
@@ -38,6 +39,11 @@ public class Population<T extends Individual> {
 	public T bestIndividual() {
 		return individuals.stream()
 				.max(Comparator.comparingDouble(Individual::fitness)).get();
+	}
+
+	public DoubleDistribution fitness() {
+		return new DoubleDistribution(individuals.stream()
+				.mapToDouble(Individual::fitness).toArray());
 	}
 
 	public List<T> asList() {
@@ -71,6 +77,10 @@ public class Population<T extends Individual> {
 	@Override
 	public String toString() {
 		return Joiner.join(asStream().map(T::toString), "\n\n");
+	}
+
+	public Population<T> copy() {
+		return new Population<>(individuals);
 	}
 
 }

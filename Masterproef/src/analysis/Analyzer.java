@@ -14,20 +14,26 @@ import genetic.individuals.rules.RuledIndividual;
 import genetic.init.RandomGenerator;
 import genetic.mutation.Mutator;
 import genetic.selection.Selection;
+import io.IO;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 import util.Bag;
 import util.LineGraph;
 import util.Pair;
 import datasets.DataSet;
+import datasets.stats.DoubleDistribution;
 import datasets.stats.Features;
 
 public class Analyzer {
@@ -35,7 +41,7 @@ public class Analyzer {
 	private final static int NB_OF_ITERATIONS = 300;
 
 	public static void main(String[] args) {
-		analyzeSizeEvolution();
+		analyzeEvolution();
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
@@ -105,20 +111,50 @@ public class Analyzer {
 		System.out.println(nbOfRules);
 	}
 
+	public static void analyzeEvolution() {
+		List<Population<RuledIndividual>> evo = evolution().collect(
+				Collectors.toList());
+		analyzeEvolution(evo, DoubleDistribution::average, "averages");
+		analyzeEvolution(evo, dd -> dd.frequencyStats().getMin(), "minima");
+		analyzeEvolution(evo, dd -> dd.frequencyStats().getMax(), "maxima");
+		analyzeEvolution(evo, DoubleDistribution::standardDeviation, "stds");
+		plotStds();
+	}
+
+	private static void analyzeEvolution(List<Population<RuledIndividual>> evo,
+			ToDoubleFunction<DoubleDistribution> f, String name) {
+		Stream<Double> data = evo.stream().map(Population::fitness)
+				.mapToDouble(f).boxed();
+		IO.write(
+				Paths.get("matlab/plot/" + name + ".txt"),
+				w -> {
+					try {
+						w.write(data.map(String::valueOf).collect(
+								Collectors.joining("\n")));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+	}
+
+	private static void plotStds() {
+		Path path = Paths.get("matlab/plot/stds.txt");
+		LineGraph.plot("Std of the population during a run", IO.lines(path)
+				.mapToDouble(Double::valueOf).toArray());
+	}
+
 	public static void analyzeDiversity() {
-		DoubleStream.Builder builder = DoubleStream.builder();
-		consumeEvolution(p -> builder.accept(DiversityMeasure.of(p)));
-		LineGraph.plot("Diversity measure during one run", builder.build()
-				.toArray());
+		LineGraph.plot("Diversity measure during one run", evolution()
+				.mapToDouble(DiversityMeasure::of).toArray());
 	}
 
 	public static void analyzeSizeEvolution() {
-		DoubleStream.Builder builder = DoubleStream.builder();
-		consumeEvolution(p -> builder.accept(p.asStream()
-				.map(RuledIndividual::getRules).map(RuleList::asList)
-				.mapToInt(List::size).average().orElse(0)));
-		LineGraph.plot("Avg nb of rules during one run", builder.build()
-				.toArray());
+		LineGraph.plot(
+				"Avg nb of rules during one run",
+				evolution().mapToDouble(
+						p -> p.asStream().map(RuledIndividual::getRules)
+								.map(RuleList::asList).mapToInt(List::size)
+								.average().orElse(0)).toArray());
 	}
 
 	private static void consumeEvolution(
@@ -126,6 +162,12 @@ public class Analyzer {
 		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 		ga.setPopulationConsumer(cons);
 		ga.apply();
+	}
+
+	private static Stream<Population<RuledIndividual>> evolution() {
+		Builder<Population<RuledIndividual>> builder = Stream.builder();
+		consumeEvolution(p -> builder.accept(p.copy()));
+		return builder.build();
 	}
 
 	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {

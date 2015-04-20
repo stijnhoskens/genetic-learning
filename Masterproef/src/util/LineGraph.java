@@ -30,8 +30,14 @@ public class LineGraph extends JPanel {
 	private int pointWidth = 4, numberYDivisions = 10;
 	private List<Double> scores;
 
+	private boolean drawPoints = true;
+
 	public LineGraph(List<Double> scores) {
 		this.scores = scores;
+	}
+
+	public void setDrawPoints(boolean dp) {
+		drawPoints = dp;
 	}
 
 	@Override
@@ -45,13 +51,6 @@ public class LineGraph extends JPanel {
 				/ (scores.size() - 1);
 		double yScale = ((double) getHeight() - 2 * padding - labelPadding)
 				/ (getMaxScore() - getMinScore());
-
-		List<Point> graphPoints = new ArrayList<>();
-		for (int i = 0; i < scores.size(); i++) {
-			int x1 = (int) (i * xScale + padding + labelPadding);
-			int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + padding);
-			graphPoints.add(new Point(x1, y1));
-		}
 
 		// draw white background
 		g2.setColor(Color.WHITE);
@@ -113,6 +112,13 @@ public class LineGraph extends JPanel {
 				- labelPadding, getWidth() - padding, getHeight() - padding
 				- labelPadding);
 
+		List<Point> graphPoints = new ArrayList<>();
+		for (int i = 0; i < scores.size(); i++) {
+			int x1 = (int) (i * xScale + padding + labelPadding);
+			int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + padding);
+			graphPoints.add(new Point(x1, y1));
+		}
+
 		Stroke oldStroke = g2.getStroke();
 		g2.setColor(lineColor);
 		g2.setStroke(GRAPH_STROKE);
@@ -124,6 +130,8 @@ public class LineGraph extends JPanel {
 			g2.drawLine(x1, y1, x2, y2);
 		}
 
+		if (!drawPoints)
+			return;
 		g2.setStroke(oldStroke);
 		g2.setColor(pointColor);
 		for (int i = 0; i < graphPoints.size(); i++) {
@@ -166,12 +174,17 @@ public class LineGraph extends JPanel {
 	}
 
 	public static void plot(String title, double[] data) {
+		plot(title, data, true);
+	}
+
+	public static void plot(String title, double[] data, boolean dp) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				List<Double> scores = Arrays.stream(data).boxed()
 						.collect(Collectors.toList());
 				LineGraph mainPanel = new LineGraph(scores);
 				mainPanel.setBackground(Color.WHITE);
+				mainPanel.setDrawPoints(dp);
 				mainPanel.setPreferredSize(new Dimension(width, height));
 				JFrame frame = new JFrame(title);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
