@@ -165,7 +165,7 @@ public class LineGraph extends JPanel {
 		return scores;
 	}
 
-	public static void plot(double[] data) {
+	public static void plot(String title, double[] data) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				List<Double> scores = Arrays.stream(data).boxed()
@@ -173,7 +173,7 @@ public class LineGraph extends JPanel {
 				LineGraph mainPanel = new LineGraph(scores);
 				mainPanel.setBackground(Color.WHITE);
 				mainPanel.setPreferredSize(new Dimension(width, height));
-				JFrame frame = new JFrame("Evolution of the best score");
+				JFrame frame = new JFrame(title);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(mainPanel);
 				frame.pack();
@@ -181,5 +181,9 @@ public class LineGraph extends JPanel {
 				frame.setVisible(true);
 			}
 		});
+	}
+
+	public static void plot(double[] data) {
+		plot("data", data);
 	}
 }

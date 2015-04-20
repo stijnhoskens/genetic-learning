@@ -9,31 +9,33 @@ import genetic.individuals.Evaluator;
 import genetic.individuals.RangeCheck;
 import genetic.individuals.rules.Condition;
 import genetic.individuals.rules.Rule;
+import genetic.individuals.rules.RuleList;
 import genetic.individuals.rules.RuledIndividual;
 import genetic.init.RandomGenerator;
 import genetic.mutation.Mutator;
 import genetic.selection.Selection;
 
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import util.Bag;
+import util.LineGraph;
 import util.Pair;
 import datasets.DataSet;
 import datasets.stats.Features;
 
 public class Analyzer {
 
+	private final static int NB_OF_ITERATIONS = 300;
+
 	public static void main(String[] args) {
-		analyzeDiversity();
+		analyzeSizeEvolution();
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
@@ -104,9 +106,19 @@ public class Analyzer {
 	}
 
 	public static void analyzeDiversity() {
-		consumeEvolution(p -> {
-			System.out.println(DiversityMeasure.of(p));
-		});
+		DoubleStream.Builder builder = DoubleStream.builder();
+		consumeEvolution(p -> builder.accept(DiversityMeasure.of(p)));
+		LineGraph.plot("Diversity measure during one run", builder.build()
+				.toArray());
+	}
+
+	public static void analyzeSizeEvolution() {
+		DoubleStream.Builder builder = DoubleStream.builder();
+		consumeEvolution(p -> builder.accept(p.asStream()
+				.map(RuledIndividual::getRules).map(RuleList::asList)
+				.mapToInt(List::size).average().orElse(0)));
+		LineGraph.plot("Avg nb of rules during one run", builder.build()
+				.toArray());
 	}
 
 	private static void consumeEvolution(
@@ -129,7 +141,7 @@ public class Analyzer {
 		algorithm.setMutationStrategy(new Mutator());
 		algorithm.setSelectionStrategy(Selection.SUS());
 		algorithm.setTerminationCriterium(() -> {
-			return algorithm.getNbOfIterations() >= 300;
+			return algorithm.getNbOfIterations() >= NB_OF_ITERATIONS;
 		});
 		return algorithm;
 	}
