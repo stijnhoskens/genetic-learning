@@ -73,10 +73,52 @@ public class Bag<T> {
 		};
 	}
 
+	public static <T> Bag<T> parallel() {
+		return new Bag<T>() {
+			@Override
+			public synchronized void add(T t) {
+				super.add(t);
+			}
+
+			@Override
+			public synchronized void addAll(Bag<T> bag) {
+				super.addAll(bag);
+			}
+
+			@Override
+			public synchronized void clear() {
+				super.clear();
+			}
+
+			@Override
+			public synchronized int count(T t) {
+				return super.count(t);
+			}
+
+			@Override
+			public synchronized Stream<T> keys() {
+				return super.keys();
+			}
+
+			@Override
+			public synchronized String toString() {
+				return super.toString();
+			}
+
+			@Override
+			public synchronized String toString(Comparator<T> order) {
+				return super.toString(order);
+			}
+		};
+	}
+
 	@Override
 	public String toString() {
-		return keys().sorted(Comparator.comparingInt(this::count).reversed())
-				.map(k -> k.toString() + ": " + map.get(k))
+		return toString(Comparator.comparingInt(this::count).reversed());
+	}
+
+	public String toString(Comparator<T> order) {
+		return keys().sorted(order).map(k -> k.toString() + ": " + map.get(k))
 				.collect(Collectors.joining("\n", "[", "]"));
 	}
 
@@ -84,7 +126,7 @@ public class Bag<T> {
 		map.clear();
 	}
 
-	public void addInternal(T t) {
+	private void addInternal(T t) {
 		map.merge(t, 1, (x, y) -> x + y);
 	}
 

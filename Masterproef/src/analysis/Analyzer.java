@@ -18,7 +18,10 @@ import io.IO;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,20 +44,19 @@ public class Analyzer {
 	private final static int NB_OF_ITERATIONS = 300;
 
 	public static void main(String[] args) {
-		analyzeEvolution();
+		analyzeIndexClassifierCorrelation();
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
-		GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
-		Bag<Pair<Set<Integer>, String>> corr = new Bag<>();
-		int n = 100;
+		Bag<Pair<Set<Integer>, String>> corr = Bag.parallel();
+		int n = 500;
+		LocalTime start = LocalTime.now();
 		IntStream
 				.range(0, n)
+				.parallel()
 				.forEach(
 						i -> {
-							if (i % 50 == 0)
-								System.out.println((i * 100) / n
-										+ "% complete.");
+							GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 							ga.apply();
 							Set<RuledIndividual> best = new HashSet<>(ga
 									.getProgress());
@@ -67,8 +69,29 @@ public class Analyzer {
 															r.getCondition()
 																	.getCheckedIndices(),
 															r.get()))));
+							best.forEach(ri -> {
+								List<Rule> rules = ri.getRules().asList();
+								if (rules.size() <= 1)
+									return;
+								Rule last = rules.get(rules.size() - 1);
+								Rule beforeLast = rules.get(rules.size() - 2);
+								corr.add(new Pair<Set<Integer>, String>(
+										beforeLast.getCondition()
+												.getCheckedIndices(), last
+												.get()));
+							});
 						});
-		System.out.println(corr);
+		System.out.println("Elapsed time: "
+				+ Duration.between(start, LocalTime.now()).getSeconds() + "s.");
+		Bag<Pair<Integer, String>> result = new Bag<>();
+		corr.stream().forEach(
+				p -> p.getFirst().forEach(
+						i -> result.add(new Pair<>(i, p.getSecond()))));
+		Comparator<Pair<Integer, String>> comp = (p0, p1) -> p0.getSecond()
+				.compareTo(p1.getSecond());
+		comp = comp.thenComparing((p0, p1) -> Integer.compare(result.count(p1),
+				result.count(p0)));
+		System.out.println(result.toString(comp));
 	}
 
 	public static void analyzeFinalSolutions() {
