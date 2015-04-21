@@ -41,10 +41,8 @@ import datasets.stats.Features;
 
 public class Analyzer {
 
-	private final static int NB_OF_ITERATIONS = 300;
-
 	public static void main(String[] args) {
-		analyzeIndexClassifierCorrelation();
+		analyzeDiversity();
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
@@ -189,9 +187,11 @@ public class Analyzer {
 
 	private static Stream<Population<RuledIndividual>> evolution() {
 		Builder<Population<RuledIndividual>> builder = Stream.builder();
-		consumeEvolution(p -> builder.accept(p.copy()));
+		consumeEvolution(p -> builder.accept(p));
 		return builder.build();
 	}
+
+	private final static int NB_OF_ITERATIONS = 500;
 
 	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {
 		Set<Features> train = DataSet.trainingSets().map(Features::load)

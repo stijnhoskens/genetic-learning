@@ -81,7 +81,7 @@ public abstract class GeneticAlgorithm<T extends Individual> {
 			if (afterEachRun != null)
 				afterEachRun.run();
 			if (consumer != null)
-				consumer.accept(population);
+				consumer.accept(population.copy());
 		}
 		return population.bestIndividual();
 	}
