@@ -1,6 +1,5 @@
 package util;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,12 +37,7 @@ public class Bag<T> {
 	}
 
 	public Stream<T> stream() {
-		return map.keySet().stream().flatMap(k -> {
-			@SuppressWarnings("unchecked")
-			T[] duplicates = (T[]) new Object[map.get(k)];
-			Arrays.fill(duplicates, k);
-			return Arrays.stream(duplicates);
-		});
+		return keys().flatMap(k -> Stream.generate(() -> k).limit(count(k)));
 	}
 
 	public static <T> Collector<T, Bag<T>, Bag<T>> collector() {
