@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
@@ -35,6 +36,7 @@ import java.util.stream.Stream.Builder;
 import util.Bag;
 import util.LineGraph;
 import util.Pair;
+import util.Triple;
 import datasets.DataSet;
 import datasets.stats.DoubleDistribution;
 import datasets.stats.Features;
@@ -42,7 +44,40 @@ import datasets.stats.Features;
 public class Analyzer {
 
 	public static void main(String[] args) {
-		analyzeDiversity();
+		analyzeIndexClassifierCorrelation2();
+	}
+
+	public static void analyzeIndexClassifierCorrelation2() {
+		Set<FeatClassifierRelation> relations = new HashSet<>();
+		int n = 100;
+		IntStream
+				.range(0, n)
+				.forEach(
+						i -> {
+							GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
+							ga.apply();
+							Set<RuledIndividual> best = new HashSet<>(ga
+									.getProgress());
+							best.stream()
+									.flatMap(
+											ri -> ri.getRules().asList()
+													.stream())
+									.forEach(
+											r -> r.getCondition()
+													.getRanges()
+													.forEach(
+															c -> relations
+																	.add(new FeatClassifierRelation(
+																			c,
+																			r.get()))));
+						});
+		Map<Triple<Integer, String, TypeOfCheck>, List<FeatClassifierRelation>> mapped = relations
+				.stream()
+				.collect(
+						Collectors
+								.groupingBy(FeatClassifierRelation::keyInformation));
+		mapped.keySet().forEach(
+				k -> System.out.println(k + ": " + mapped.get(k).size()));
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {
