@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -48,10 +49,12 @@ public class Analyzer {
 	}
 
 	public static void analyzeIndexClassifierCorrelation2() {
-		Set<FeatClassifierRelation> relations = new HashSet<>();
-		int n = 100;
+		Set<FeatClassifierRelation> relations = Collections
+				.synchronizedSet(new HashSet<>());
+		int n = 500;
 		IntStream
 				.range(0, n)
+				.parallel()
 				.forEach(
 						i -> {
 							GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
@@ -76,8 +79,20 @@ public class Analyzer {
 				.collect(
 						Collectors
 								.groupingBy(FeatClassifierRelation::keyInformation));
-		mapped.keySet().forEach(
-				k -> System.out.println(k + ": " + mapped.get(k).size()));
+		List<ReducedRelation> reduced = mapped
+				.entrySet()
+				.stream()
+				.map(e -> {
+					Triple<Integer, String, TypeOfCheck> triple = e.getKey();
+					Collection<RangeCheck> checks = e.getValue().stream()
+							.map(FeatClassifierRelation::getCheck)
+							.collect(Collectors.toSet());
+					return new ReducedRelation(triple.getFirst(), triple
+							.getSecond(), triple.getThird(), checks);
+				}).sorted(ReducedRelation.comparator())
+				.collect(Collectors.toList());
+		reduced.forEach(r -> System.out.println(r.getCheck() + " => "
+				+ r.getClassifier() + " (" + r.getCount() + ")"));
 	}
 
 	public static void analyzeIndexClassifierCorrelation() {

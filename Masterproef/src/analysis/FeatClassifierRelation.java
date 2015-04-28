@@ -6,7 +6,7 @@ import genetic.individuals.RangeCheck;
 
 public class FeatClassifierRelation extends Pair<RangeCheck, String> {
 
-	private final String classifier;
+	protected final String classifier;
 	private final RangeCheck check;
 
 	public FeatClassifierRelation(RangeCheck check, String classifier) {
@@ -28,11 +28,11 @@ public class FeatClassifierRelation extends Pair<RangeCheck, String> {
 	}
 
 	public TypeOfCheck typeOfCheck() {
-		return TypeOfCheck.of(check);
+		return TypeOfCheck.of(getCheck());
 	}
 
 	public Triple<Integer, String, TypeOfCheck> keyInformation() {
-		return new Triple<>(getFeature(), classifier, typeOfCheck());
+		return new Triple<>(getFeature(), getClassifier(), typeOfCheck());
 	}
 
 	@Override
