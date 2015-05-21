@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
@@ -44,6 +45,8 @@ import datasets.stats.Features;
 
 public class Analyzer {
 
+	private final static AtomicInteger counter = new AtomicInteger(0);
+
 	public static void main(String[] args) {
 		analyzeIndexClassifierCorrelation2();
 	}
@@ -51,12 +54,13 @@ public class Analyzer {
 	public static void analyzeIndexClassifierCorrelation2() {
 		Set<FeatClassifierRelation> relations = Collections
 				.synchronizedSet(new HashSet<>());
-		int n = 500;
+		int n = 2000;
 		IntStream
 				.range(0, n)
 				.parallel()
 				.forEach(
 						i -> {
+							System.out.println(counter.incrementAndGet());
 							GeneticAlgorithm<RuledIndividual> ga = defaultSettings();
 							ga.apply();
 							Set<RuledIndividual> best = new HashSet<>(ga
@@ -74,6 +78,7 @@ public class Analyzer {
 																			c,
 																			r.get()))));
 						});
+
 		Map<Triple<Integer, String, TypeOfCheck>, List<FeatClassifierRelation>> mapped = relations
 				.stream()
 				.collect(
