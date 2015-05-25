@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -58,6 +59,18 @@ public class IO {
 	public static void write(Path path, Consumer<BufferedWriter> consumer) {
 		try {
 			BufferedWriter writer = writer(path);
+			consumer.accept(writer);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void appendedWrite(Path path,
+			Consumer<BufferedWriter> consumer) {
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(path,
+					StandardOpenOption.APPEND, StandardOpenOption.CREATE);
 			consumer.accept(writer);
 			writer.close();
 		} catch (IOException e) {

@@ -1,14 +1,20 @@
 package genetic.individuals;
 
+import io.IO;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -26,6 +32,7 @@ public class Evaluator {
 	private static final Path CACHE_PATH = Paths.get("datasets/cache.txt");
 	private final Properties cache;
 	private final AtomicInteger nbOfEvaluations = new AtomicInteger();
+	private static final Path TIMINGS = Paths.get("documentation/timings.txt");
 
 	public Evaluator(Metric metric) {
 		this.metric = metric;
@@ -61,20 +68,25 @@ public class Evaluator {
 				if (cache.containsKey(key))
 					return Double.valueOf(cache.getProperty(key));
 			}
-			// System.out.println("Evaluating " + clsfrName + " on " + data +
-			// ".");
-			// LocalTime start = LocalTime.now();
+			System.out.println("Evaluating " + clsfrName + " on " + data + ".");
+			LocalTime start = LocalTime.now();
 			Instances train = data.trainInstances();
 			Classifier classifier = Classifiers.trained(clsfrName, train);
 			Instances test = data.testInstances();
 			Evaluation eval = new Evaluation(train);
 			eval.evaluateModel(classifier, test);
 			double evaluation = metric.value(eval);
-			// long seconds = Duration.between(start, LocalTime.now())
-			// .getSeconds();
-			// System.out.println("Evaluation of " + clsfrName + " on " + data
-			// + " done.");
-			// System.out.println("Elapsed time: " + seconds + "s.");
+			long seconds = Duration.between(start, LocalTime.now())
+					.getSeconds();
+			System.out.println("Evaluation of " + clsfrName + " on " + data
+					+ " done.");
+			System.out.println("Elapsed time: " + seconds + "s.");
+			IO.appendedWrite(
+					TIMINGS,
+					w -> IO.writeLine(
+							w,
+							Joiner.join(",", clsfrName, data.toString(),
+									Long.toString(seconds))));
 			putProperty(key, evaluation);
 			return metric.value(eval);
 		} catch (Exception e) {
@@ -100,14 +112,21 @@ public class Evaluator {
 	}
 
 	protected static void fillCache(int threadpoolSize) {
-		Set<Features> features = DataSet.all().map(Features::load)
+		Set<Features> features = DataSet.trainingSets().map(Features::load)
 				.collect(Collectors.toSet());
 		Evaluator eval = new Evaluator();
 		ExecutorService threadpool = Executors
 				.newFixedThreadPool(threadpoolSize);
-		features.forEach(f -> Classifiers.allOptions().forEach(
+		List<String> options = Classifiers.allOptions().sorted()
+				.collect(Collectors.toList());
+		features.forEach(f -> options.stream().forEach(
 				s -> threadpool.execute(() -> eval.evaluate(f, s))));
 		threadpool.shutdown();
+		try {
+			threadpool.awaitTermination(10, TimeUnit.HOURS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void cleanCache() {
@@ -149,7 +168,7 @@ public class Evaluator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		fillCache(2);
+		fillCache(1);
 	}
 
 	public int getNbOfEvaluations() {
