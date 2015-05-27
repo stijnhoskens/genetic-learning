@@ -1,0 +1,90 @@
+NaiveBayes,datasets\cora\evoTrain,0
+SVM -S 0,datasets\cora\evoTrain,16
+SVM -S 1,datasets\cora\evoTrain,6
+SVM -S 2,datasets\cora\evoTrain,91
+SVM -S 3,datasets\cora\evoTrain,3
+SVM -S 4,datasets\cora\evoTrain,10
+SVM -S 5,datasets\cora\evoTrain,18
+SVM -S 6,datasets\cora\evoTrain,9
+SVM -S 7,datasets\cora\evoTrain,6
+kNN,datasets\cora\evoTrain,17
+NaiveBayes,datasets\movies\evoTrain,0
+SVM -S 0,datasets\movies\evoTrain,0
+SVM -S 1,datasets\movies\evoTrain,0
+SVM -S 2,datasets\movies\evoTrain,0
+SVM -S 3,datasets\movies\evoTrain,0
+SVM -S 4,datasets\movies\evoTrain,0
+SVM -S 5,datasets\movies\evoTrain,0
+SVM -S 6,datasets\movies\evoTrain,0
+SVM -S 7,datasets\movies\evoTrain,0
+kNN,datasets\movies\evoTrain,2
+NaiveBayes,datasets\rcv1\evoTrain,1
+SVM -S 0,datasets\rcv1\evoTrain,225
+SVM -S 1,datasets\rcv1\evoTrain,15
+SVM -S 2,datasets\rcv1\evoTrain,714
+SVM -S 3,datasets\rcv1\evoTrain,12
+SVM -S 4,datasets\rcv1\evoTrain,51
+SVM -S 5,datasets\rcv1\evoTrain,234
+SVM -S 6,datasets\rcv1\evoTrain,105
+SVM -S 7,datasets\rcv1\evoTrain,48
+kNN,datasets\rcv1\evoTrain,400
+NaiveBayes,datasets\20ng\evoTrain,0
+SVM -S 0,datasets\20ng\evoTrain,31
+SVM -S 1,datasets\20ng\evoTrain,3
+SVM -S 2,datasets\20ng\evoTrain,35
+SVM -S 3,datasets\20ng\evoTrain,1
+SVM -S 4,datasets\20ng\evoTrain,2
+SVM -S 5,datasets\20ng\evoTrain,14
+SVM -S 6,datasets\20ng\evoTrain,11
+SVM -S 7,datasets\20ng\evoTrain,3
+kNN,datasets\20ng\evoTrain,83
+NaiveBayes,datasets\wipo\evoTrain,4
+SVM -S 0,datasets\wipo\evoTrain,727
+SVM -S 1,datasets\wipo\evoTrain,34
+SVM -S 2,datasets\wipo\evoTrain,277
+SVM -S 3,datasets\wipo\evoTrain,32
+SVM -S 4,datasets\wipo\evoTrain,65
+SVM -S 5,datasets\wipo\evoTrain,1124
+SVM -S 6,datasets\wipo\evoTrain,300
+SVM -S 7,datasets\wipo\evoTrain,513
+kNN,datasets\wipo\evoTrain,830
+NaiveBayes,datasets\dmoz\evoTrain,26
+SVM -S 0,datasets\dmoz\evoTrain,360
+SVM -S 1,datasets\dmoz\evoTrain,58
+SVM -S 2,datasets\dmoz\evoTrain,785
+SVM -S 3,datasets\dmoz\evoTrain,35
+SVM -S 4,datasets\dmoz\evoTrain,52
+SVM -S 5,datasets\dmoz\evoTrain,85
+SVM -S 6,datasets\dmoz\evoTrain,317
+SVM -S 7,datasets\dmoz\evoTrain,253
+kNN,datasets\dmoz\evoTrain,1002
+NaiveBayes,datasets\classic\evoTrain,0
+SVM -S 0,datasets\classic\evoTrain,0
+SVM -S 1,datasets\classic\evoTrain,0
+SVM -S 2,datasets\classic\evoTrain,0
+SVM -S 3,datasets\classic\evoTrain,0
+SVM -S 4,datasets\classic\evoTrain,0
+SVM -S 5,datasets\classic\evoTrain,0
+SVM -S 6,datasets\classic\evoTrain,0
+SVM -S 7,datasets\classic\evoTrain,0
+kNN,datasets\classic\evoTrain,4
+NaiveBayes,datasets\webkb\evoTrain,0
+SVM -S 0,datasets\webkb\evoTrain,0
+SVM -S 1,datasets\webkb\evoTrain,0
+SVM -S 2,datasets\webkb\evoTrain,2
+SVM -S 3,datasets\webkb\evoTrain,0
+SVM -S 4,datasets\webkb\evoTrain,0
+SVM -S 5,datasets\webkb\evoTrain,1
+SVM -S 6,datasets\webkb\evoTrain,0
+SVM -S 7,datasets\webkb\evoTrain,0
+kNN,datasets\webkb\evoTrain,3
+NaiveBayes,datasets\r52\evoTrain,0
+SVM -S 0,datasets\r52\evoTrain,5
+SVM -S 1,datasets\r52\evoTrain,0
+SVM -S 2,datasets\r52\evoTrain,27
+SVM -S 3,datasets\r52\evoTrain,0
+SVM -S 4,datasets\r52\evoTrain,2
+SVM -S 5,datasets\r52\evoTrain,6
+SVM -S 6,datasets\r52\evoTrain,3
+SVM -S 7,datasets\r52\evoTrain,1
+kNN,datasets\r52\evoTrain,6
