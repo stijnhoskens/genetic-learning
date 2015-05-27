@@ -55,14 +55,13 @@ public class Evaluator {
 
 	public double evaluate(String clsfrName, DataSet data) {
 		try {
-			String key = clsfrName + "@" + data.toString();
+			String key = clsfrName.trim() + "@" + data.toString();
 			nbOfEvaluations.incrementAndGet();
 			synchronized (this) {
 				if (cache.containsKey(key))
 					return Double.valueOf(cache.getProperty(key));
 			}
-			// System.out.println("Evaluating " + clsfrName + " on " + data +
-			// ".");
+			System.out.println("Evaluating " + clsfrName + " on " + data + ".");
 			// LocalTime start = LocalTime.now();
 			Instances train = data.trainInstances();
 			Classifier classifier = Classifiers.trained(clsfrName, train);

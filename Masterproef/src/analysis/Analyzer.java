@@ -248,9 +248,8 @@ public class Analyzer {
 
 	private final static int NB_OF_ITERATIONS = 500;
 
-	private static GeneticAlgorithm<RuledIndividual> defaultSettings() {
-		Set<Features> train = DataSet.trainingSets().map(Features::load)
-				.collect(Collectors.toSet());
+	public static GeneticAlgorithm<RuledIndividual> defaultSettings(
+			Set<Features> train) {
 		GeneticConfiguration config = new GeneticConfiguration(0.2, 0.5, 200,
 				0.05);
 		GeneticAlgorithm<RuledIndividual> algorithm = new GeneticAdapter<>(
@@ -264,5 +263,11 @@ public class Analyzer {
 			return algorithm.getNbOfIterations() >= NB_OF_ITERATIONS;
 		});
 		return algorithm;
+	}
+
+	public static GeneticAlgorithm<RuledIndividual> defaultSettings() {
+		Set<Features> train = DataSet.trainingSets().map(Features::load)
+				.collect(Collectors.toSet());
+		return defaultSettings(train);
 	}
 }

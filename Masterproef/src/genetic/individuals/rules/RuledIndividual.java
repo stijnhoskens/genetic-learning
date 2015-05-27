@@ -41,10 +41,10 @@ public class RuledIndividual implements Individual {
 				.mapToDouble(f -> rList.apply(f).evaluate(f, eval)).average()
 				.orElse(0);
 		rList.removeUnusedRulesAndDuplicates();
-		long count = rList.asList().stream()
-				.flatMap(r -> r.getApplicableData().stream()).count();
-		if (count > 9)
-			System.out.println("Bug detected!");
+		// long count = rList.asList().stream()
+		// .flatMap(r -> r.getApplicableData().stream()).count();
+		// if (count > 9)
+		//	System.out.println("Bug detected!");
 		return evaluation;
 	}
 
